@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Panel Supervisor Solar</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☀️</text></svg>">
+<style>
+:root{color-scheme:light dark;--bg:#F3F1EC;--s:#fff;--s2:#F8F7F3;--tx:#1B1F1D;--dim:#626A66;--bd:#DEDBD2;--ac:#0F6E56;--g:#168A4A;--y:#C98A00;--r:#C0392B;--yb:#FDF0CF;--yt:#8A5A00}
+@media(prefers-color-scheme:dark){:root{--bg:#121513;--s:#1A1E1C;--s2:#222725;--tx:#E8ECE9;--dim:#9AA39E;--bd:#2E3532;--ac:#4FC9A4;--g:#4ADE80;--y:#F2C94C;--r:#F28B82;--yb:#3A2E0D;--yt:#F2C94C}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select,textarea{font:inherit;color:var(--tx)}button{cursor:pointer}select option{background:var(--s);color:var(--tx)}
+header{position:sticky;top:0;z-index:5;background:var(--s);border-bottom:1px solid var(--bd);padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.w{max-width:1000px;margin:0 auto}.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}h1{font-size:16px;margin:0 auto 0 0}h1 small{color:var(--dim);font-weight:400;font-size:12px}
+.ib{width:36px;height:36px;border:1px solid var(--bd);background:var(--s2);border-radius:6px}
+nav{display:flex;gap:6px;overflow-x:auto}nav button{white-space:nowrap;border:1px solid var(--bd);background:var(--s);color:var(--dim);border-radius:16px;padding:6px 13px;font-weight:600}nav button.on{background:var(--ac);border-color:var(--ac);color:var(--s)}
+.seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--dim)}.seg button{border:1px solid var(--bd);background:var(--s2);border-radius:6px;padding:5px 10px;font-weight:600}.seg button.on{background:var(--tx);color:var(--s);border-color:var(--tx)}
+#st{font-size:12px;margin-top:6px;color:var(--dim)}#st.ok{color:var(--ac)}#st.bad{color:var(--r)}
+main{max-width:1000px;margin:0 auto;padding:12px 14px 50px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}.k{background:var(--s);border:1px solid var(--bd);border-radius:6px;padding:9px 12px;text-align:center;min-width:0}.k b{display:block;font-size:clamp(15px,4.8vw,20px);overflow-wrap:anywhere}.k span{font-size:11.5px;color:var(--dim)}
+.c{background:var(--s);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}.c h3{margin:0 0 8px;font-size:14.5px}.sub{color:var(--dim);font-size:12px;margin-bottom:8px}
+.hb{display:grid;grid-template-columns:96px 1fr 110px;gap:8px;align-items:center;margin:5px 0;font-size:12.5px}.hb>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hb b{text-align:right}
+.tr{height:14px;background:var(--s2);border:1px solid var(--bd);border-radius:4px;overflow:hidden}.tr i{display:block;height:100%}
+.dn{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.ring{width:120px;height:120px;border-radius:50%;position:relative;flex:none}.ring::after{content:'';position:absolute;inset:26px;background:var(--s);border-radius:50%}
+.lg{font-size:12.5px;margin:3px 0}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#fff}
+.msg{background:var(--s2);border-left:4px solid var(--ac);border-radius:4px;padding:10px 12px;margin:8px 0}
+.warn{background:var(--yb);color:var(--yt);border-radius:6px;padding:9px 12px;margin-bottom:10px;font-weight:600}
+.empty{padding:26px;text-align:center;color:var(--dim)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}th,td{padding:6px 7px;text-align:center;border-bottom:1px solid var(--bd)}th{color:var(--dim);font-size:12px}td:first-child,th:first-child{text-align:left}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.btn{border:1px solid var(--bd);background:var(--s2);border-radius:6px;padding:8px 13px;font-weight:600;text-decoration:none;display:inline-block;color:var(--tx)}.btn.p{background:var(--ac);border-color:var(--ac);color:var(--s)}.btn.d{color:var(--r);border-color:var(--r)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+input,select,textarea{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:7px 9px}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;padding:14px;z-index:50}.mb.on{display:grid}
+.md{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:18px;width:100%;max-width:470px;max-height:90vh;overflow:auto}.md h2{margin:0 0 10px;font-size:16px}
+.f{margin-bottom:9px}.f label{display:block;font-size:12px;color:var(--dim);margin-bottom:3px}.f input,.f select,.f textarea{width:100%}
+.ma{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--s);padding:8px 14px;border-radius:6px;z-index:99;display:none;font-size:13px}
+@media print{header,.row,.ib{display:none}body{background:#fff;color:#000}.c,.k{break-inside:avoid}}
+</style></head><body>
+<div id="toast"></div>
+<header><div class="w"><div class="top"><h1>Panel de Supervisión <small>· Solar</small></h1><button class="ib" id="bSync" title="Sincronizar">⟳</button><button class="ib" id="bCfg" title="Conectar Google Sheets">☁️</button></div>
+<nav id="nav"><button data-t="eq">👥 Equipo</button><button data-t="gr">📄 Informe grupal</button><button data-t="as">🧑 Informe asesor</button><button data-t="da">✏️ Datos</button></nav>
+<div class="seg" id="mode"><span>Medir resultado en:</span><button data-m="p">💲 Pesos</button><button data-m="k">☀️ kWp</button><button data-m="i">🏠 Proyectos instalados</button></div>
+<div class="seg"><span>Mes:</span><select id="per"></select></div>
+<div id="st">Sin conectar</div></div></header>
+<main id="v"></main>
+
+<div class="mb" id="mCfg"><div class="md"><h2>☁️ Conectar Google Sheets</h2>
+<div class="f"><label>Enlace de la Google Sheet</label><input id="cSheet" placeholder="https://docs.google.com/spreadsheets/d/…" autocomplete="off"></div>
+<div class="f"><label>URL del Apps Script (termina en /exec)</label><input id="cUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></div>
+<div id="cMsg" class="sub" style="word-break:break-all"></div>
+<div class="ma"><button class="btn" id="cTest">🔌 Probar</button><button class="btn" id="cShare">📲 Enlace para otro equipo</button><button class="btn d" id="cOff">Desconectar</button><button class="btn" data-x>Cancelar</button><button class="btn p" id="cOk">Conectar y cargar</button></div></div></div>
+
+<div class="mb" id="mRec"><div class="md"><h2 id="rT">＋ Registro diario</h2><div id="rF"></div><datalist id="vl"></datalist>
+<div class="ma"><button class="btn d" id="rDel">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p" id="rOk">Guardar</button></div></div></div>
+
+<div class="mb" id="mMet"><div class="md"><h2 id="mT">🎯 Meta del mes</h2><div id="mF"></div>
+<div class="ma"><button class="btn d" id="mDel">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p" id="mOk">Guardar</button></div></div></div>
+
+<script>
+const $=s=>document.querySelector(s),E=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const K={cfg:'solar_cfg',recs:'solar_recs',mets:'solar_mets',qR:'solar_qr',qM:'solar_qm',mode:'solar_mode',demo:'solar_demo'};
+try{const m=location.hash.match(/^#cfg=(.+)$/);if(m){const x=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));if(x&&x.url&&x.sheetUrl)localStorage.setItem(K.cfg,JSON.stringify({sheetUrl:x.sheetUrl,url:x.url}));history.replaceState(null,'',location.pathname)}}catch(e){}
+let cfg=ld(K.cfg,{sheetUrl:'',url:''}),recs=ld(K.recs,[]),mets=ld(K.mets,[]),qR=ld(K.qR,{}),qM=ld(K.qM,{}),mode=ld(K.mode,'p'),demo=ld(K.demo,false),tab='eq',sel=0,busy=false,per='',D={list:[],dh:21,dt:1},editR=null,editM=null,fdate='';
+const na=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),slug=s=>na(s).replace(/[^a-z0-9]/g,'');
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2800)};
+const fM=n=>new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n||0),fP=n=>(isFinite(n)?n.toFixed(1):'0.0')+'%';
+const nf=n=>new Intl.NumberFormat('es-CL',{maximumFractionDigits:1}).format(n||0),fK=n=>nf(n)+' kWp',fN=n=>nf(n)+' proy.';
+const wd=(a,b)=>{let n=0;for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)){const w=d.getDay();if(w&&w<6)n++}return n};
+const pb=p=>{const [y,m]=p.split('-').map(Number);return[new Date(y,m-1,1),new Date(y,m,0)]};
+/* ---- normalización (lo que viene de la Sheet puede traer formatos distintos) ---- */
+function nd(s){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[0];m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):''}
+function np(s){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{1,2})/);if(m)return m[1]+'-'+m[2].padStart(2,'0');m=s.match(/^(\d{1,2})[\/.-](\d{4})$/);return m?m[2]+'-'+m[1].padStart(2,'0'):''}
+const numI=v=>{const t=String(v??'').trim();if(/^-?\d+[.,]\d{1,2}$/.test(t))return Math.round(parseFloat(t.replace(',','.')));const s=t.replace(/[^\d-]/g,'');return s===''||s==='-'?'':Number(s)};
+const numD=v=>{const t=String(v??'').trim().replace(',','.');return /^-?\d+(\.\d+)?$/.test(t)?Number(t):(t===''?'':numI(v))};
+function nrec(r){const o={fecha:nd(r.fecha),vendedor:String(r.vendedor||'').trim(),leads:numI(r.leads),vis:numI(r.vis),cot:numI(r.cot),cie:numI(r.cie),venta:numI(r.venta),kwp:numD(r.kwp),inst:numI(r.inst),obs:String(r.obs||'').trim()};o.id='R:'+o.fecha+'|'+slug(o.vendedor);return o}
+function nmet(r){const o={periodo:np(r.periodo),vendedor:String(r.vendedor||'').trim(),meta:numI(r.meta),metaK:numD(r.metaK),metaP:numI(r.metaP),dias:numI(r.dias)};o.id='M:'+o.periodo+'|'+slug(o.vendedor);return o}
+const okR=r=>r.fecha&&r.vendedor,okM=r=>r.periodo&&r.vendedor,sameO=(a,b,ks)=>ks.every(k=>String(a[k]??'')===String(b[k]??''));
+const KR=['fecha','vendedor','leads','vis','cot','cie','venta','kwp','inst','obs'],KM=['periodo','vendedor','meta','metaK','metaP','dias'];
+const pendN=()=>Object.keys(qR).length+Object.keys(qM).length;
+/* ---- conexión con Apps Script ---- */
+function status(ok,m){const e=$('#st');e.className=ok?'ok':'bad';e.textContent='☁️ '+m}
+function statusOk(){const p=pendN();status(!p,'Conectado · '+recs.length+' registros, '+mets.length+' metas'+(p?' · '+p+' pendiente(s) de enviar':''))}
+function jsonp(action,extra,cb){
+  if(!cfg.url)return cb({ok:false,error:'Falta la URL del conector'});
+  const fn='jp_'+Date.now().toString(36)+Math.floor(Math.random()*1e4);let done=false;const s=document.createElement('script');
+  const fin=d=>{if(done)return;done=true;clearTimeout(t);try{delete window[fn]}catch(e){}s.remove();cb(d)};
+  const t=setTimeout(()=>fin({ok:false,error:'Sin respuesta del conector'}),20000);
+  window[fn]=fin;s.onerror=()=>fin({ok:false,error:'No se pudo conectar con el conector'});
+  s.src=cfg.url+'?'+new URLSearchParams(Object.assign({action,prefix:fn,sheetUrl:cfg.sheetUrl,_:Date.now()},extra||{}));document.body.appendChild(s)}
+function pull(){
+  if(busy||!cfg.url)return;busy=true;status(true,'sincronizando…');
+  jsonp('get',{},d=>{busy=false;
+    if(!d||!d.ok){status(false,(d&&d.error)||'Error de conexión');return}
+    if(!Array.isArray(d.registros)){status(false,'Ese Apps Script no es el del panel solar');return}
+    const mr=new Map(d.registros.map(nrec).filter(okR).map(r=>[r.id,r]));
+    Object.keys(qR).forEach(id=>{if(mr.has(id)&&sameO(mr.get(id),qR[id],KR))delete qR[id];else mr.set(id,qR[id])});
+    const mm=new Map((d.metas||[]).map(nmet).filter(okM).map(r=>[r.id,r]));
+    Object.keys(qM).forEach(id=>{if(mm.has(id)&&sameO(mm.get(id),qM[id],KM))delete qM[id];else mm.set(id,qM[id])});
+    recs=[...mr.values()];mets=[...mm.values()];demo=false;
+    sv(K.recs,recs);sv(K.mets,mets);sv(K.qR,qR);sv(K.qM,qM);sv(K.demo,false);statusOk();render()})}
+function push(){
+  if(!cfg.url)return;const R=Object.values(qR),M2=Object.values(qM);if(!R.length&&!M2.length)return;
+  status(true,'guardando en Google Sheets…');
+  const post=(action,rows)=>rows.length?fetch(cfg.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({action,sheetUrl:cfg.sheetUrl,rows})}):Promise.resolve();
+  Promise.all([post('saveReg',R),post('saveMeta',M2)]).then(()=>setTimeout(pull,1500)).catch(statusOk)}
+const sync=()=>{if(cfg.url)pendN()?push():pull()};
+/* ---- modos de medición: pesos, kWp o proyectos instalados ---- */
+const MODES={p:{l:'Pesos ($)',f:fM,r:'venta',m:'meta',nm:'Venta neta',tl:'Ticket promedio',tf:fM,tk:v=>v.cie?v.venta/v.cie:0},
+ k:{l:'kWp',f:fK,r:'kwp',m:'metaK',nm:'kWp vendidos',tl:'kWp por cierre',tf:fK,tk:v=>v.cie?v.kwp/v.cie:0},
+ i:{l:'Proyectos instalados',f:fN,r:'inst',m:'metaP',nm:'Proyectos instalados',tl:'Instalados / cierres',tf:fP,tk:v=>v.cie?v.inst/v.cie*100:0}};
+const M=()=>MODES[mode]||MODES.p,NUM=['leads','vis','cot','cie','venta','kwp','inst','meta','metaK','metaP'];
+/* Datos del mes: suma de registros diarios + metas. Proyección = resultado ÷ días hábiles transcurridos × días hábiles del mes */
+function monthData(p){
+  const A={},get=n=>A[slug(n)]||(A[slug(n)]=Object.assign({n},NUM.reduce((o,k)=>(o[k]=0,o),{})));
+  recs.filter(r=>r.fecha.slice(0,7)===p).forEach(r=>['leads','vis','cot','cie','venta','kwp','inst'].forEach(f=>get(r.vendedor)[f]+=Number(r[f])||0));
+  let dias=0;mets.filter(m=>m.periodo===p).forEach(m=>{const a=get(m.vendedor);a.meta=Number(m.meta)||0;a.metaK=Number(m.metaK)||0;a.metaP=Number(m.metaP)||0;if(!dias&&Number(m.dias)>0)dias=Number(m.dias)});
+  const [s,e]=pb(p),dh=dias||wd(s,e),t=new Date();t.setHours(0,0,0,0);let dt=t<s?0:Math.min(wd(s,t<e?t:e),dh);if(demo)dt=Math.round(dh/2);
+  return{list:Object.values(A),dh,dt}}
+function c(v){const m=M(),res=Number(v[m.r])||0,mt=Number(v[m.m])||0,cum=mt?res/mt*100:0,fc=D.dt>0?res/D.dt*D.dh:0,pr=mt?fc/mt*100:0,r=(a,b)=>b?a/b*100:0;
+  return{...v,res,mt,cum,fc,pr,l2v:r(v.vis,v.leads),v2c:r(v.cot,v.vis),c2c:r(v.cie,v.cot),conv:r(v.cie,v.leads),tk:m.tk(v),sem:mt?(pr>=100?'g':pr>=85?'y':'r'):'n'}}
+const L=()=>D.list.map(c),tot=()=>c(D.list.reduce((a,v)=>{NUM.forEach(k=>a[k]+=Number(v[k])||0);return a},NUM.reduce((o,k)=>(o[k]=0,o),{n:'Equipo'})));
+/* Semáforo: verde = proyecta ≥100% · amarillo = 85–99,9% (puede salvarse o caer) · rojo = <85% */
+const SC={g:'var(--g)',y:'var(--y)',r:'var(--r)',n:'var(--dim)'},SL={g:'En línea',y:'En riesgo',r:'Bajo la meta',n:'Sin meta'},PAL=['#0F6E56','#2F6FDB','#C98A00','#B23A8F','#D9622B','#5B6BC0','#2A9D8F','#8D6E63','#E4572E','#6C757D'];
+const LB={l2v:'lead→visita',v2c:'visita→cotización',c2c:'cotización→cierre'},ACT={l2v:'reforzar el contacto de leads y el agendamiento de visitas',v2c:'acompañar en las visitas y mejorar la calidad de la cotización',c2c:'acompañar en negociaciones y cierres'};
+const weak=(v,T)=>['l2v','v2c','c2c'].map(k=>[k,T[k]?v[k]/T[k]:1]).sort((a,b)=>a[1]-b[1])[0][0];
+function dx(v,T){const good=[],bad=[],m=M();
+  [['conv','conversión total'],['l2v',LB.l2v],['v2c',LB.v2c],['c2c',LB.c2c]].forEach(([k,l])=>{if(v[k]>=T[k]*1.1)good.push(l+' ('+fP(v[k])+' vs '+fP(T[k])+' del equipo)');else if(v[k]<=T[k]*.9)bad.push(l+' ('+fP(v[k])+' vs '+fP(T[k])+')')});
+  if(v.tk>=T.tk*1.1)good.push(m.tl.toLowerCase()+' ('+m.tf(v.tk)+')');else if(v.tk&&v.tk<=T.tk*.9)bad.push(m.tl.toLowerCase()+' ('+m.tf(v.tk)+' vs '+m.tf(T.tk)+')');
+  if(v.sem==='n')return v.n+' no tiene meta cargada en '+m.l+' para este mes: cárgala en «Datos → Meta del mes» para evaluar su cumplimiento.';
+  const sem={g:'va en línea con su meta',y:'está en zona de riesgo: puede salvarse si acelera, o caer a rojo',r:'va bajo la meta'}[v.sem];
+  return v.n+' '+sem+' (proyecta '+fP(v.pr)+' de su meta en '+m.l+'). '+(good.length?'Destaca en '+good.join(', '):'No destaca aún en ningún KPI')+(bad.length?', pero está bajo el equipo en '+bad.join(', ')+'.':'.')+' Foco sugerido: '+ACT[weak(v,T)]+'.'}
+function gdx(A,T){const n={g:0,y:0,r:0,n:0},cnt={l2v:0,v2c:0,c2c:0},B=A.filter(v=>v.sem!=='n');A.forEach(v=>{n[v.sem]++;cnt[weak(v,T)]++});
+  if(!B.length)return'Aún no hay metas cargadas en '+M().l+' para este mes: cárgalas en «Datos → Meta del mes».';
+  const s=[...B].sort((a,b)=>b.pr-a.pr),w=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0],top=[...A].sort((a,b)=>b.res-a.res).slice(0,2),sh=T.res?top.reduce((a,v)=>a+v.res,0)/T.res*100:0;
+  return'La sucursal proyecta '+fP(T.pr)+' de su meta (en '+M().l+'): '+n.g+' asesor(es) en verde, '+n.y+' en amarillo y '+n.r+' en rojo'+(n.n?' ('+n.n+' sin meta)':'')+'. Mejor proyección: '+s[0].n+' ('+fP(s[0].pr)+'); más rezagado: '+s[s.length-1].n+' ('+fP(s[s.length-1].pr)+'). La etapa donde más asesores quedan bajo el equipo es '+LB[w]+': conviene '+ACT[w]+'.'+(A.length>3&&sh>55?' Atención: '+top.map(v=>v.n).join(' y ')+' concentran '+fP(sh)+' del resultado.':'')}
+/* ---- gráficos y piezas ---- */
+const hb=(l,a,max,col,t)=>`<div class="hb"><span title="${E(l)}">${E(l)}</span><div class="tr"><i style="width:${max?Math.max(0,Math.min(a/max*100,100)):0}%;background:${col}"></i></div><b>${t}</b></div>`;
+function dn(p){let a=0;const t=p.reduce((s,x)=>s+x[1],0)||1,g=p.map(x=>{const s=a;a+=x[1]/t*100;return x[2]+' '+s+'% '+a+'%'}).join(',');
+  return`<div class="dn"><div class="ring" style="background:conic-gradient(${g})"></div><div>${p.map(x=>`<div class="lg"><i style="background:${x[2]}"></i>${E(x[0])} <b>${fP(x[1]/t*100)}</b></div>`).join('')}</div></div>`}
+const k=(l,v)=>`<div class="k"><b>${v}</b><span>${l}</span></div>`,pill=s=>`<span class="pill" style="background:${SC[s]}">${SL[s]}</span>`;
+const kpis=v=>{const m=M();return`<div class="kp">${k('Meta ('+m.l+')',m.f(v.mt))+k(m.nm,m.f(v.res))+k('Cumplimiento real',fP(v.cum))+k('Proyección cierre',fP(v.pr))+k('Conversión lead→cierre',fP(v.conv))+k(m.tl,m.tf(v.tk))}</div>`};
+const per_=()=>`${per} · Día hábil ${D.dt} de ${D.dh} · Medido en ${M().l}`;
+let CP='';const cp=()=>{(navigator.clipboard?navigator.clipboard.writeText(CP):Promise.reject()).then(()=>toast('Mensaje copiado')).catch(()=>prompt('Copia el mensaje:',CP))};
+const acts=()=>`<div class="row"><button class="btn p" onclick="cp()">📋 Copiar mensaje</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(CP)}">📲 WhatsApp</a><button class="btn" onclick="print()">🖨️ Imprimir / PDF</button></div>`;
+const none=()=>`<div class="c"><div class="empty">No hay datos para ${per}.<br>Crea la meta del mes y los registros en la pestaña ✏️ Datos${cfg.url?'':', o conecta tu Sheet con ☁️'}.</div></div>`;
+/* ---- pestañas ---- */
+function eq(){if(!D.list.length)return none();const A=L(),T=tot();return kpis(T)+`<div class="c"><h3>Semáforo del equipo</h3><div class="sub">${per_()} · Verde: proyecta ≥100% · Amarillo: 85–99,9% (puede salvarse o caer) · Rojo: &lt;85%</div><div class="tw"><table><thead><tr><th>Asesor</th><th>${M().nm}</th><th>Cumpl.</th><th>Proyección</th><th>Conversión</th><th>${M().tl}</th></tr></thead><tbody>${[...A].sort((a,b)=>b.pr-a.pr).map(v=>`<tr><td><span class="dot" style="background:${SC[v.sem]}"></span>${E(v.n)}</td><td>${M().f(v.res)}</td><td>${fP(v.cum)}</td><td><b style="color:${SC[v.sem]}">${v.sem==='n'?'—':fP(v.pr)}</b></td><td>${fP(v.conv)}</td><td>${M().tf(v.tk)}</td></tr>`).join('')}</tbody></table></div></div>`}
+function gr(){if(!D.list.length)return none();const A=L(),T=tot(),m=M(),mx=Math.max(T.mt,T.res,T.fc,1),msg=gdx(A,T);
+  CP='*Informe grupal* · '+per+' ('+m.l+')\nMeta: '+m.f(T.mt)+'\n'+m.nm+': '+m.f(T.res)+' ('+fP(T.cum)+')\nProyección: '+fP(T.pr)+'\n\n'+msg;
+  return`<div class="c"><h3>Informe grupal ${pill(T.sem)}</h3><div class="sub">${per_()}</div></div>`+kpis(T)+
+  `<div class="c"><h3>Meta vs resultado de la sucursal</h3>${hb('Meta',T.mt,mx,'var(--dim)',m.f(T.mt))+hb(m.nm,T.res,mx,SC[T.sem],m.f(T.res))+hb('Proyección',T.fc,mx,SC[T.sem],m.f(T.fc))}</div>`+
+  `<div class="c"><h3>Proyección de cierre por asesor (% de su meta)</h3>${[...A].filter(v=>v.sem!=='n').sort((a,b)=>b.pr-a.pr).map(v=>hb(v.n,v.pr,120,SC[v.sem],fP(v.pr))).join('')||'<div class="sub">Sin metas cargadas.</div>'}</div>`+
+  `<div class="c"><h3>Participación en el resultado</h3>${T.res?dn(A.map((v,i)=>[v.n,v.res,PAL[i%10]])):'<div class="sub">Sin resultados aún.</div>'}</div>`+
+  `<div class="c"><h3>Embudo del equipo</h3>${hb('Leads',T.leads,T.leads,PAL[1],T.leads)+hb('Visitas',T.vis,T.leads,PAL[1],T.vis+' · '+fP(T.l2v))+hb('Cotizaciones',T.cot,T.leads,PAL[2],T.cot+' · '+fP(T.v2c))+hb('Cierres',T.cie,T.leads,PAL[0],T.cie+' · '+fP(T.c2c))}</div>`+
+  `<div class="c"><h3>Diagnóstico grupal</h3><div class="msg">${E(msg)}</div></div>`+acts()}
+function as(){if(!D.list.length)return none();const A=L(),T=tot();if(sel>=A.length)sel=0;const v=A[sel],m=M(),mx=Math.max(v.mt,v.res,v.fc,1),msg=dx(v,T);
+  CP='*Informe '+v.n+'* · '+per+' ('+m.l+')\nMeta: '+m.f(v.mt)+'\n'+m.nm+': '+m.f(v.res)+' ('+fP(v.cum)+')\nProyección: '+fP(v.pr)+'\nConversión: '+fP(v.conv)+'\n\n'+msg;
+  return`<div class="row"><select onchange="sel=+this.value;render()">${A.map((x,i)=>`<option value="${i}"${i===sel?' selected':''}>${E(x.n)}</option>`).join('')}</select></div>`+
+  `<div class="c"><h3>Informe · ${E(v.n)} ${pill(v.sem)}</h3><div class="sub">${per_()}</div></div>`+kpis(v)+
+  `<div class="c"><h3>Meta vs resultado</h3>${hb('Meta',v.mt,mx,'var(--dim)',m.f(v.mt))+hb(m.nm,v.res,mx,SC[v.sem],m.f(v.res))+hb('Proyección',v.fc,mx,SC[v.sem],m.f(v.fc))}</div>`+
+  `<div class="c"><h3>Embudo vs promedio del equipo</h3>${hb('Lead→visita',v.l2v,100,PAL[1],fP(v.l2v)+' (eq. '+fP(T.l2v)+')')+hb('Visita→cotiz.',v.v2c,100,PAL[2],fP(v.v2c)+' (eq. '+fP(T.v2c)+')')+hb('Cotiz.→cierre',v.c2c,100,PAL[0],fP(v.c2c)+' (eq. '+fP(T.c2c)+')')}</div>`+
+  `<div class="c"><h3>Cumplimiento y destino de cotizaciones</h3><div class="dn">${dn([['Meta lograda',Math.min(v.cum,100),SC[v.sem]],['Falta',Math.max(100-v.cum,0),'var(--bd)']])}${dn([['Cerradas',v.cie,PAL[0]],['Sin cerrar',Math.max(v.cot-v.cie,0),PAL[2]]])}</div></div>`+
+  `<div class="c"><h3>Mensaje para el asesor</h3><div class="msg">${E(msg)}</div></div>`+acts()}
+function da(){
+  const rr=recs.filter(r=>r.fecha.slice(0,7)===per&&(!fdate||r.fecha===fdate)).sort((a,b)=>a.fecha<b.fecha?1:-1),mm=mets.filter(x=>x.periodo===per);
+  return`<div class="c"><h3>Cómo cargar los datos</h3><div class="sub">1) Crea la meta del mes de cada asesor (en $, kWp y proyectos). 2) Registra la actividad y las ventas cada día. Todo se guarda en tu Google Sheet y lo que edites allá aparece aquí al sincronizar.</div><div class="row"><button class="btn p" onclick="openRec(null)">＋ Registro diario</button><button class="btn" onclick="openMet(null)">🎯 Meta del mes</button>${cfg.url||recs.length||mets.length?'':'<button class="btn" onclick="loadDemo()">Cargar datos de ejemplo</button>'}</div></div>`+
+  `<div class="c"><h3>Metas de ${per}</h3><div class="tw">${mm.length?`<table><thead><tr><th>Asesor</th><th>Meta $</th><th>Meta kWp</th><th>Meta proy.</th><th>Días háb.</th><th></th></tr></thead><tbody>${mm.map(x=>`<tr><td>${E(x.vendedor)}${qM[x.id]?' ⏳':''}</td><td>${fM(x.meta)}</td><td>${fK(x.metaK)}</td><td>${x.metaP===''?0:x.metaP}</td><td>${x.dias===''?'auto':x.dias}</td><td><button class="btn" onclick="openMet('${x.id}')">✏️</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sin metas este mes.</div>'}</div></div>`+
+  `<div class="c"><h3>Registros de ${per}</h3><div class="row"><span class="sub" style="margin:0">Ver solo un día:</span><input type="date" id="fd" value="${fdate}" onchange="fdate=this.value;render()"><button class="btn" onclick="fdate='';render()">Ver todos</button></div><div class="tw">${rr.length?`<table><thead><tr><th>Fecha</th><th>Asesor</th><th>Leads</th><th>Visitas</th><th>Cotiz.</th><th>Cierres</th><th>Venta $</th><th>kWp</th><th>Instal.</th><th></th></tr></thead><tbody>${rr.map(r=>`<tr><td>${r.fecha}${qR[r.id]?' ⏳':''}</td><td>${E(r.vendedor)}</td><td>${r.leads}</td><td>${r.vis}</td><td>${r.cot}</td><td>${r.cie}</td><td>${fM(r.venta)}</td><td>${nf(r.kwp)}</td><td>${r.inst}</td><td><button class="btn" onclick="openRec('${r.id}')">✏️</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sin registros'+(fdate?' en ese día':' este mes')+'.</div>'}</div></div>`}
+const V={eq,gr,as,da};
+/* ---- formularios ---- */
+const RF=[['vendedor','Asesor *','text'],['fecha','Fecha *','date'],['leads','Leads nuevos','number'],['vis','Visitas realizadas','number'],['cot','Cotizaciones enviadas','number'],['cie','Cierres (ventas ganadas)','number'],['venta','Venta neta sin IVA ($)','number'],['kwp','kWp vendidos','number'],['inst','Proyectos instalados','number'],['obs','Observaciones','area']];
+const MF=[['periodo','Mes *','month'],['vendedor','Asesor *','text'],['meta','Meta en pesos ($)','number'],['metaK','Meta en kWp','number'],['metaP','Meta en proyectos instalados','number'],['dias','Días hábiles del mes (opcional, si hay feriados)','number']];
+const buildForm=(p,fs,el)=>el.innerHTML=fs.map(([k,l,t])=>`<div class="f"><label>${l}</label>${t==='area'?`<textarea id="${p}_${k}" rows="2"></textarea>`:`<input id="${p}_${k}" type="${t}"${t==='number'?' step="any" inputmode="decimal"':''}${k==='vendedor'?' list="vl" autocomplete="off"':''}>`}</div>`).join('');
+const readForm=(p,fs)=>fs.reduce((o,[k])=>(o[k]=$('#'+p+'_'+k).value,o),{});
+const names=()=>{const n={};recs.concat(mets).forEach(x=>{if(x.vendedor)n[slug(x.vendedor)]=x.vendedor});return n};
+const lastV=()=>(D.list[0]||{}).n||Object.values(names())[0]||'';
+const canAdd=o=>{const n=names();return n[slug(o.vendedor)]||Object.keys(n).length<10||(toast('Máximo 10 asesores'),false)};
+function openRec(id){const r=id?recs.find(x=>x.id===id):null;editR=r?r.id:null;
+  RF.forEach(([k])=>$('#r_'+k).value=r?r[k]:(k==='fecha'?(per===today().slice(0,7)?today():per+'-01'):k==='vendedor'?lastV():''));
+  $('#r_vendedor').disabled=$('#r_fecha').disabled=!!r;$('#rDel').style.display=r?'':'none';$('#rT').textContent=r?'Editar registro':'＋ Registro diario';$('#mRec').classList.add('on')}
+function saveRec(){const o=nrec(readForm('r',RF));if(!okR(o)){toast('Falta el asesor o la fecha');return}if(!canAdd(o))return;
+  qR[o.id]=o;sv(K.qR,qR);const i=recs.findIndex(x=>x.id===o.id);i>=0?recs[i]=o:recs.unshift(o);sv(K.recs,recs);per=o.fecha.slice(0,7);
+  $('#mRec').classList.remove('on');render();statusOk();toast('Guardado');push()}
+function openMet(id){const m=id?mets.find(x=>x.id===id):null;editM=m?m.id:null;
+  MF.forEach(([k])=>$('#m_'+k).value=m?m[k]:(k==='periodo'?per:k==='vendedor'?lastV():''));
+  $('#m_vendedor').disabled=$('#m_periodo').disabled=!!m;$('#mDel').style.display=m?'':'none';$('#mT').textContent=m?'Editar meta':'🎯 Meta del mes';$('#mMet').classList.add('on')}
+function saveMet(){const o=nmet(readForm('m',MF));if(!okM(o)||!(o.meta>0||o.metaK>0||o.metaP>0)){toast('Falta el mes, el asesor o al menos una meta');return}if(!canAdd(o))return;
+  qM[o.id]=o;sv(K.qM,qM);const i=mets.findIndex(x=>x.id===o.id);i>=0?mets[i]=o:mets.unshift(o);sv(K.mets,mets);per=o.periodo;
+  $('#mMet').classList.remove('on');render();statusOk();toast('Guardado');push()}
+function del(kind){
+  const isR=kind==='reg',x=isR?recs.find(r=>r.id===editR):mets.find(r=>r.id===editM);if(!x)return;
+  if(!confirm('¿Eliminar '+(isR?'el registro de '+x.vendedor+' del '+x.fecha:'la meta de '+x.vendedor+' ('+x.periodo+')')+'?\n\nTambién se borra de la Google Sheet.'))return;
+  const fin=()=>{if(isR){recs=recs.filter(r=>r.id!==x.id);delete qR[x.id]}else{mets=mets.filter(r=>r.id!==x.id);delete qM[x.id]}sv(K.recs,recs);sv(K.mets,mets);sv(K.qR,qR);sv(K.qM,qM);$('#mRec').classList.remove('on');$('#mMet').classList.remove('on');render();if(cfg.url)statusOk();toast('Eliminado')};
+  if(!cfg.url){fin();return}
+  jsonp('delX',{t:isR?'reg':'met',a:isR?x.fecha:x.periodo,b:x.vendedor},d=>d&&d.ok?fin():toast((d&&d.error)||'No se pudo eliminar. Revisa la conexión.'))}
+function loadDemo(){const p=today().slice(0,7),sp=[['Camila Rojas',15e6,1.08,46,.62,.70,.42],['Diego Soto',15e6,.97,40,.55,.62,.40],['Valentina Pérez',12e6,.88,52,.48,.55,.30],['Matías Núñez',12e6,.72,38,.45,.50,.26],['Javiera Silva',15e6,1.02,34,.70,.72,.45],['Felipe Araya',10e6,.80,44,.60,.45,.28]];
+  demo=true;sv(K.demo,true);recs=[];mets=[];
+  sp.forEach(([nm,meta,pr,Ld,a,b,cc])=>{const f=pr*.5,vis=Math.round(Ld*a),cot=Math.round(vis*b),mk=Math.round(meta/1.3e6*10)/10,mp=Math.round(meta/2.5e6);
+    recs.push(nrec({fecha:p+'-01',vendedor:nm,leads:Ld,vis,cot,cie:Math.max(1,Math.round(cot*cc)),venta:Math.round(meta*f),kwp:Math.round(mk*f*10)/10,inst:Math.round(mp*f)}));
+    mets.push(nmet({periodo:p,vendedor:nm,meta,metaK:mk,metaP:mp}))});
+  qR={};qM={};sv(K.recs,recs);sv(K.mets,mets);sv(K.qR,qR);sv(K.qM,qM);per=p;render();toast('Datos de ejemplo cargados (solo en este equipo)')}
+/* ---- render ---- */
+function render(){
+  const cur=today().slice(0,7),ps=[...new Set([cur].concat(recs.map(r=>r.fecha.slice(0,7)),mets.map(m=>m.periodo)))].filter(Boolean).sort().reverse();
+  if(!per||!ps.includes(per))per=cur;
+  $('#per').innerHTML=ps.map(p=>`<option value="${p}">${p}</option>`).join('');$('#per').value=per;
+  D=monthData(per);$('#vl').innerHTML=Object.values(names()).map(n=>`<option value="${E(n)}">`).join('');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  $('#v').innerHTML=(demo?'<div class="warn">Datos de ejemplo guardados solo en este equipo. Al conectar tu Sheet se reemplazan por los reales.</div>':'')+(!cfg.url&&!demo?'<div class="warn">Sin conexión: lo que cargues se guarda en este equipo y se envía cuando conectes la Sheet con ☁️.</div>':'')+V[tab]()}
+/* ---- eventos ---- */
+buildForm('r',RF,$('#rF'));buildForm('m',MF,$('#mF'));
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;sv(K.mode,mode);render()});
+$('#per').onchange=()=>{per=$('#per').value;fdate='';render()};
+$('#rOk').onclick=saveRec;$('#rDel').onclick=()=>del('reg');$('#mOk').onclick=saveMet;$('#mDel').onclick=()=>del('met');
+$('#bSync').onclick=()=>cfg.url?sync():$('#bCfg').click();
+$('#bCfg').onclick=()=>{$('#cSheet').value=cfg.sheetUrl;$('#cUrl').value=cfg.url;$('#cMsg').textContent='';$('#mCfg').classList.add('on')};
+$('#cOk').onclick=()=>{const s=$('#cSheet').value.trim(),u=$('#cUrl').value.trim();
+  if(!/^https:\/\/docs\.google\.com\/spreadsheets\/d\//.test(s)||!/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)){toast('Revisa los enlaces: el del script debe terminar en /exec');return}
+  cfg={sheetUrl:s,url:u};sv(K.cfg,cfg);$('#mCfg').classList.remove('on');pull()};
+$('#cOff').onclick=()=>{cfg={sheetUrl:'',url:''};sv(K.cfg,cfg);$('#mCfg').classList.remove('on');$('#st').className='';$('#st').textContent='Sin conectar';render()};
+$('#cTest').onclick=()=>{const u=$('#cUrl').value.trim(),s=$('#cSheet').value.trim(),m=$('#cMsg'),bak=cfg;if(!u){m.textContent='❌ Falta la URL del Apps Script';return}
+  m.textContent='Probando…';cfg={sheetUrl:s,url:u};const info=' · La URL tiene '+u.length+' caracteres y termina en "'+u.slice(-12)+'"';
+  jsonp('ping',{},d=>{cfg=bak;if(d&&d.ok)m.textContent='✅ El conector responde ('+d.version+')'+info;else fetch(u+'?action=ping',{mode:'no-cors'}).then(()=>m.textContent='⚠️ Llega a Google pero no carga el script: abre la app en Chrome o Safari (no dentro de WhatsApp) y desactiva bloqueadores.'+info).catch(()=>m.textContent='❌ El navegador no logra comunicarse con Google (bloqueador, red o ahorro de datos).'+info)})};
+$('#cShare').onclick=()=>{const s=$('#cSheet').value.trim()||cfg.sheetUrl,u=$('#cUrl').value.trim()||cfg.url;if(!s||!u){toast('Primero conecta la Sheet en este equipo');return}
+  const link=location.origin+location.pathname+'#cfg='+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({sheetUrl:s,url:u})))));
+  (navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(()=>toast('Enlace copiado. Envíatelo y ábrelo en el otro equipo')).catch(()=>prompt('Copia este enlace:',link))};
+document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>b.closest('.mb').classList.remove('on'));
+document.querySelectorAll('.mb').forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('on')});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+setInterval(()=>{if(!document.hidden&&!document.querySelector('.mb.on'))sync()},60000);
+/* Primera visita sin conexión ni datos: carga los asesores ficticios para poder mostrar el panel de inmediato */
+if(!cfg.url&&!recs.length&&!mets.length&&!ld('solar_seen',false)){sv('solar_seen',true);loadDemo()}
+render();if(cfg.url){statusOk();sync()}
+</script></body></html>
