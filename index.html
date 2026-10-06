@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Panel Supervisor Solar</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☀️</text></svg>">
+<style>
+:root{color-scheme:light dark;--bg:#F3F1EC;--s:#fff;--s2:#F8F7F3;--tx:#1B1F1D;--dim:#626A66;--bd:#DEDBD2;--ac:#0F6E56;--g:#168A4A;--y:#C98A00;--r:#C0392B;--yb:#FDF0CF;--yt:#8A5A00}
+@media(prefers-color-scheme:dark){:root{--bg:#121513;--s:#1A1E1C;--s2:#222725;--tx:#E8ECE9;--dim:#9AA39E;--bd:#2E3532;--ac:#4FC9A4;--g:#4ADE80;--y:#F2C94C;--r:#F28B82;--yb:#3A2E0D;--yt:#F2C94C}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select,textarea{font:inherit;color:var(--tx)}button{cursor:pointer}select option{background:var(--s);color:var(--tx)}
+header{position:sticky;top:0;z-index:5;background:var(--s);border-bottom:1px solid var(--bd);padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.w{max-width:1000px;margin:0 auto}.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}h1{font-size:16px;margin:0 auto 0 0}h1 small{color:var(--dim);font-weight:400;font-size:12px}
+.ib{width:36px;height:36px;border:1px solid var(--bd);background:var(--s2);border-radius:6px}
+nav{display:flex;gap:6px;overflow-x:auto}nav button{white-space:nowrap;border:1px solid var(--bd);background:var(--s);color:var(--dim);border-radius:16px;padding:6px 13px;font-weight:600}nav button.on{background:var(--ac);border-color:var(--ac);color:var(--s)}
+.seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--dim)}.seg button{border:1px solid var(--bd);background:var(--s2);border-radius:6px;padding:5px 10px;font-weight:600}.seg button.on{background:var(--tx);color:var(--s);border-color:var(--tx)}
+#st{font-size:12px;margin-top:6px;color:var(--dim)}#st.ok{color:var(--ac)}#st.bad{color:var(--r)}
+main{max-width:1000px;margin:0 auto;padding:12px 14px 50px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}.k{background:var(--s);border:1px solid var(--bd);border-radius:6px;padding:9px 12px;text-align:center;min-width:0}.k b{display:block;font-size:clamp(15px,4.8vw,20px);overflow-wrap:anywhere}.k span{font-size:11.5px;color:var(--dim)}
+.c{background:var(--s);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}.c h3{margin:0 0 8px;font-size:14.5px}.sub{color:var(--dim);font-size:12px;margin-bottom:8px}
+.hb{display:grid;grid-template-columns:96px 1fr 120px;gap:8px;align-items:center;margin:5px 0;font-size:12.5px}.hb>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hb b{text-align:right}
+.tr{height:14px;background:var(--s2);border:1px solid var(--bd);border-radius:4px;overflow:hidden}.tr i{display:block;height:100%}
+.dn{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.ring{width:120px;height:120px;border-radius:50%;position:relative;flex:none}.ring::after{content:'';position:absolute;inset:26px;background:var(--s);border-radius:50%}
+.lg{font-size:12.5px;margin:3px 0}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#fff}
+.msg{background:var(--s2);border-left:4px solid var(--ac);border-radius:4px;padding:10px 12px;margin:8px 0}
+.al{background:var(--s2);border-left:4px solid var(--y);border-radius:4px;padding:8px 10px;margin:6px 0;font-size:13px}.al.r{border-color:var(--r)}.al.g{border-color:var(--g)}
+.warn{background:var(--yb);color:var(--yt);border-radius:6px;padding:9px 12px;margin-bottom:10px;font-weight:600}
+.empty{padding:26px;text-align:center;color:var(--dim)}svg.ch{width:100%;height:auto;display:block}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}th,td{padding:6px 7px;text-align:center;border-bottom:1px solid var(--bd)}th{color:var(--dim);font-size:12px}td:first-child,th:first-child{text-align:left}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.btn{border:1px solid var(--bd);background:var(--s2);border-radius:6px;padding:8px 13px;font-weight:600;text-decoration:none;display:inline-block;color:var(--tx)}.btn.p{background:var(--ac);border-color:var(--ac);color:var(--s)}.btn.d{color:var(--r);border-color:var(--r)}.btn.sm{padding:4px 9px;font-size:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+input,select,textarea{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:7px 9px}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;padding:14px;z-index:50}.mb.on{display:grid}
+.md{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:18px;width:100%;max-width:470px;max-height:90vh;overflow:auto}.md h2{margin:0 0 10px;font-size:16px}
+.f{margin-bottom:9px}.f label{display:block;font-size:12px;color:var(--dim);margin-bottom:3px}.f input,.f select,.f textarea{width:100%}.f .r2{display:flex;gap:8px}.f .r2 input{flex:1}
+.ma{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--s);padding:8px 14px;border-radius:6px;z-index:99;display:none;font-size:13px}
+@media print{header,.row,.ib,.noprint{display:none}body{background:#fff;color:#000}.c,.k{break-inside:avoid}}
+</style></head><body>
+<div id="toast"></div>
+<header><div class="w"><div class="top"><h1>Panel de Supervisión <small>· Solar</small></h1><button class="ib" id="bSync" title="Sincronizar">⟳</button><button class="ib" id="bCfg" title="Conectar Google Sheets">☁️</button></div>
+<nav id="nav"><button data-t="eq">👥 Equipo</button><button data-t="av">📈 Avance diario</button><button data-t="gr">📄 Informe grupal</button><button data-t="as">🧑 Informe asesor</button><button data-t="su">🧭 Supervisión</button><button data-t="da">✏️ Datos</button></nav>
+<div class="seg" id="mode"><span>Medir resultado en:</span><button data-m="p">💲 Pesos</button><button data-m="k">☀️ kWp</button><button data-m="i">🏠 Proyectos instalados</button></div>
+<div class="seg"><span>Mes:</span><select id="per"></select></div>
+<div id="st">Sin conectar</div></div></header>
+<main id="v"></main>
+
+<div class="mb" id="mCfg"><div class="md"><h2>☁️ Conectar Google Sheets</h2>
+<div class="f"><label>Enlace de la Google Sheet</label><input id="cSheet" placeholder="https://docs.google.com/spreadsheets/d/…" autocomplete="off"></div>
+<div class="f"><label>URL del Apps Script (termina en /exec)</label><input id="cUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></div>
+<div id="cMsg" class="sub" style="word-break:break-all"></div>
+<div class="ma"><button class="btn" id="cTest">🔌 Probar</button><button class="btn" id="cShare">📲 Enlace para otro equipo</button><button class="btn d" id="cOff">Desconectar</button><button class="btn" data-x>Cancelar</button><button class="btn p" id="cOk">Conectar y cargar</button></div></div></div>
+
+<div class="mb" id="mreg"><div class="md"><h2 class="ti"></h2><div class="fm"></div><div class="ma"><button class="btn d del">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p ok">Guardar</button></div></div></div>
+<div class="mb" id="mmet"><div class="md"><h2 class="ti"></h2><div class="fm"></div><div class="ma"><button class="btn d del">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p ok">Guardar</button></div></div></div>
+<div class="mb" id="mnota"><div class="md"><h2 class="ti"></h2><div class="fm"></div><div class="ma"><button class="btn d del">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p ok">Guardar</button></div></div></div>
+<div class="mb" id="mase"><div class="md"><h2 class="ti"></h2><div class="fm"></div><div class="ma"><button class="btn d del" style="display:none">Eliminar</button><button class="btn" data-x>Cancelar</button><button class="btn p ok">Guardar</button></div></div></div>
+<datalist id="vl"></datalist>
+
+<script>
+const $=s=>document.querySelector(s),E=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const K={cfg:'solar2_cfg',db:'solar2_db',q:'solar2_q',mode:'solar2_mode',demo:'solar2_demo',dd:'solar2_dd',form:'solar2_form',seen:'solar2_seen'};
+try{const m=location.hash.match(/^#cfg=(.+)$/);if(m){const x=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));if(x&&x.url&&x.sheetUrl)localStorage.setItem(K.cfg,JSON.stringify({sheetUrl:x.sheetUrl,url:x.url}));history.replaceState(null,'',location.pathname)}}catch(e){}
+const T0=['reg','met','nota','fer','par','ase'],empty=()=>T0.reduce((o,t)=>(o[t]=[],o),{}),emptyQ=()=>T0.reduce((o,t)=>(o[t]={},o),{});
+let cfg=ld(K.cfg,ld('solar_cfg',{sheetUrl:'',url:''})),DB=Object.assign(empty(),ld(K.db,{})),Q=Object.assign(emptyQ(),ld(K.q,{})),mode=ld(K.mode,'p'),demo=ld(K.demo,false),formUrl=ld(K.form,''),
+ tab='eq',sel=0,avSel='',sd=0,busy=false,per='',D={list:[],dh:21,dt:1,rs:[]},fdate='',ed={};
+const na=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),slug=s=>na(s).replace(/[^a-z0-9]/g,'');
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),today=()=>iso(new Date()),nowISO=()=>demo?ld(K.dd,today()):today(),cur=()=>today().slice(0,7);
+const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2800)};
+const fM=n=>new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n||0),fP=n=>(isFinite(n)?n.toFixed(1):'0.0')+'%';
+const nf=n=>new Intl.NumberFormat('es-CL',{maximumFractionDigits:1}).format(n||0),fK=n=>nf(n)+' kWp',fN=n=>nf(n)+' proy.',sh=n=>n>=1e6?nf(n/1e6)+' M':n>=1e3?nf(n/1e3)+' mil':nf(n);
+/* ---- feriados de Chile (los de la hoja «Feriados» mandan; estos son el respaldo) ---- */
+const FER0=[['2026-01-01','Año Nuevo'],['2026-04-03','Viernes Santo'],['2026-04-04','Sábado Santo'],['2026-05-01','Día del Trabajo'],['2026-05-21','Glorias Navales'],['2026-06-21','Pueblos Indígenas'],['2026-06-29','San Pedro y San Pablo'],['2026-07-16','Virgen del Carmen'],['2026-08-15','Asunción'],['2026-09-18','Independencia'],['2026-09-19','Glorias del Ejército'],['2026-10-12','Encuentro de Dos Mundos'],['2026-10-31','Iglesias Evangélicas'],['2026-11-01','Todos los Santos'],['2026-12-08','Inmaculada'],['2026-12-25','Navidad'],['2027-01-01','Año Nuevo'],['2027-03-26','Viernes Santo'],['2027-03-27','Sábado Santo'],['2027-05-01','Día del Trabajo'],['2027-05-21','Glorias Navales'],['2027-06-21','Pueblos Indígenas'],['2027-06-28','San Pedro y San Pablo'],['2027-07-16','Virgen del Carmen'],['2027-08-15','Asunción'],['2027-09-18','Independencia'],['2027-09-19','Glorias del Ejército'],['2027-10-11','Encuentro de Dos Mundos'],['2027-10-31','Iglesias Evangélicas'],['2027-11-01','Todos los Santos'],['2027-12-08','Inmaculada'],['2027-12-25','Navidad']];
+let HOL=new Set(FER0.map(x=>x[0]));const refHol=()=>{HOL=new Set(DB.fer.length?DB.fer.map(f=>f.fecha):FER0.map(x=>x[0]))};
+const bd=d=>{const w=d.getDay();return w>0&&w<6&&!HOL.has(iso(d))};
+const wd=(a,b)=>{let n=0;for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1))if(bd(d))n++;return n};
+const pb=p=>{const [y,m]=p.split('-').map(Number);return[new Date(y,m-1,1),new Date(y,m,0)]};
+const prevP=p=>{const [y,m]=p.split('-').map(Number),d=new Date(y,m-2,1);return iso(d).slice(0,7)};
+const at=s=>new Date(s+'T12:00:00');
+/* ---- normalización (la Sheet puede traer formatos distintos) ---- */
+function nd(s){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[0];m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):''}
+function np(s){s=String(s||'').trim();let m=s.match(/^(\d{4})-(\d{1,2})/);if(m)return m[1]+'-'+m[2].padStart(2,'0');m=s.match(/^(\d{1,2})[\/.-](\d{4})$/);return m?m[2]+'-'+m[1].padStart(2,'0'):''}
+const numI=v=>{const t=String(v??'').trim();if(/^-?\d+[.,]\d{1,2}$/.test(t))return Math.round(parseFloat(t.replace(',','.')));const s=t.replace(/[^\d-]/g,'');return s===''||s==='-'?'':Number(s)};
+const numD=v=>{const t=String(v??'').trim().replace(',','.');return /^-?\d+(\.\d+)?$/.test(t)?Number(t):(t===''?'':numI(v))};
+const tx=v=>String(v??'').trim();
+function nrec(r){const o={fecha:nd(r.fecha),vendedor:tx(r.vendedor),leads:numI(r.leads),vis:numI(r.vis),cot:numI(r.cot),cie:numI(r.cie),venta:numI(r.venta),kwp:numD(r.kwp),inst:numI(r.inst),perd:numI(r.perd),motivo:tx(r.motivo),fuente:tx(r.fuente),tipo:tx(r.tipo),pipeA:numI(r.pipeA),pipeN:numI(r.pipeN),ciclo:numD(r.ciclo),obs:tx(r.obs)};o.id='R:'+o.fecha+'|'+slug(o.vendedor);return o}
+function nmet(r){const o={periodo:np(r.periodo),vendedor:tx(r.vendedor),meta:numI(r.meta),metaK:numD(r.metaK),metaP:numI(r.metaP),dias:numI(r.dias)};o.id='M:'+o.periodo+'|'+slug(o.vendedor);return o}
+const nnota=r=>({id:tx(r.id),fecha:nd(r.fecha),vendedor:tx(r.vendedor),compromiso:tx(r.compromiso),limite:nd(r.limite),estado:/^cumpl/i.test(tx(r.estado))?'Cumplido':'Pendiente',nota:tx(r.nota)});
+const nfer=r=>({id:'F:'+nd(r.fecha),fecha:nd(r.fecha),nombre:tx(r.nombre)}),npar=r=>({id:'P:'+tx(r.clave),clave:tx(r.clave),valor:tx(r.valor),desc:tx(r.desc)}),nase=r=>({id:'A:'+slug(r.vendedor),vendedor:tx(r.vendedor),correo:tx(r.correo).toLowerCase(),activo:/^no$/i.test(tx(r.activo))?'No':'Sí'});
+const NORM={reg:nrec,met:nmet,nota:nnota,fer:nfer,par:npar,ase:nase},OKF={reg:r=>r.fecha&&r.vendedor,met:r=>r.periodo&&r.vendedor,nota:r=>r.id&&r.vendedor,fer:r=>r.fecha,par:r=>r.clave,ase:r=>r.vendedor};
+const FL={reg:['fecha','vendedor','leads','vis','cot','cie','venta','kwp','inst','perd','motivo','fuente','tipo','pipeA','pipeN','ciclo','obs'],met:['periodo','vendedor','meta','metaK','metaP','dias'],nota:['id','fecha','vendedor','compromiso','limite','estado','nota'],fer:['fecha','nombre'],par:['clave','valor'],ase:['vendedor','correo','activo']};
+const SRC={reg:'registros',met:'metas',nota:'notas',fer:'feriados',par:'params',ase:'asesores'},sameO=(a,b,ks)=>ks.every(k=>String(a[k]??'')===String(b[k]??''));
+const pendN=()=>T0.reduce((n,t)=>n+Object.keys(Q[t]).length,0),P=(k,d)=>{const x=DB.par.find(p=>p.clave===k),v=x?parseFloat(String(x.valor).replace(',','.')):NaN;return isNaN(v)?d:v};
+const saveAll=()=>{sv(K.db,DB);sv(K.q,Q)};
+function qs(t,o){Q[t][o.id]=o;const a=DB[t],i=a.findIndex(x=>x.id===o.id);i>=0?a[i]=o:a.unshift(o);saveAll()}
+/* ---- conexión con Apps Script ---- */
+function status(ok,m){const e=$('#st');e.className=ok?'ok':'bad';e.textContent='☁️ '+m}
+function statusOk(){const p=pendN();status(!p,'Conectado · '+DB.reg.length+' registros, '+DB.met.length+' metas'+(p?' · '+p+' pendiente(s) de enviar':''))}
+function jsonp(action,extra,cb){
+  if(!cfg.url)return cb({ok:false,error:'Falta la URL del conector'});
+  const fn='jp_'+Date.now().toString(36)+Math.floor(Math.random()*1e4);let done=false;const s=document.createElement('script');
+  const fin=d=>{if(done)return;done=true;clearTimeout(t);try{delete window[fn]}catch(e){}s.remove();cb(d)};
+  const t=setTimeout(()=>fin({ok:false,error:'Sin respuesta del conector'}),20000);
+  window[fn]=fin;s.onerror=()=>fin({ok:false,error:'No se pudo conectar con el conector'});
+  s.src=cfg.url+'?'+new URLSearchParams(Object.assign({action,prefix:fn,sheetUrl:cfg.sheetUrl,_:Date.now()},extra||{}));document.body.appendChild(s)}
+function pull(){
+  if(busy||!cfg.url)return;busy=true;status(true,'sincronizando…');
+  jsonp('get',{},d=>{busy=false;
+    if(!d||!d.ok){status(false,(d&&d.error)||'Error de conexión');return}
+    if(!Array.isArray(d.registros)||!Array.isArray(d.feriados)){status(false,'Ese Apps Script no es la versión 2 del panel solar: pega el script nuevo y vuelve a implementar');return}
+    T0.forEach(t=>{const m=new Map((d[SRC[t]]||[]).map(NORM[t]).filter(OKF[t]).map(r=>[r.id,r]));
+      Object.keys(Q[t]).forEach(id=>{if(m.has(id)&&sameO(m.get(id),Q[t][id],FL[t]))delete Q[t][id];else m.set(id,Q[t][id])});DB[t]=[...m.values()]});
+    formUrl=d.formUrl||'';demo=false;sv(K.form,formUrl);sv(K.demo,false);saveAll();statusOk();render()})}
+function push(){
+  if(!cfg.url||!pendN())return;status(true,'guardando en Google Sheets…');
+  const post=(t,rows)=>rows.length?fetch(cfg.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({action:'save',t,sheetUrl:cfg.sheetUrl,rows})}):Promise.resolve();
+  Promise.all(T0.map(t=>post(t,Object.values(Q[t])))).then(()=>setTimeout(pull,1500)).catch(statusOk)}
+const sync=()=>{if(cfg.url)pendN()?push():pull()};
+function rmLocal(t,id){DB[t]=DB[t].filter(x=>x.id!==id);delete Q[t][id];saveAll()}
+function delX(t,a,b,id,after){if(!cfg.url){rmLocal(t,id);after&&after();return}
+  jsonp('delX',{t,a,b},d=>{if(d&&d.ok){rmLocal(t,id);after&&after()}else toast((d&&d.error)||'No se pudo eliminar. Revisa la conexión.')})}
+/* ---- modos: pesos, kWp o proyectos instalados ---- */
+const MODES={p:{l:'Pesos ($)',f:fM,r:'venta',m:'meta',nm:'Venta neta',tl:'Ticket promedio',tf:fM,s:sh,tk:v=>v.cie?v.venta/v.cie:0},
+ k:{l:'kWp',f:fK,r:'kwp',m:'metaK',nm:'kWp vendidos',tl:'kWp por cierre',tf:fK,s:nf,tk:v=>v.cie?v.kwp/v.cie:0},
+ i:{l:'Proyectos instalados',f:fN,r:'inst',m:'metaP',nm:'Proyectos instalados',tl:'Instalados / cierres',tf:fP,s:nf,tk:v=>v.cie?v.inst/v.cie*100:0}};
+const M=()=>MODES[mode]||MODES.p,NUM=['leads','vis','cot','cie','venta','kwp','inst','perd','meta','metaK','metaP','pipeA','pipeN','cs','cn'];
+const blank=n=>Object.assign(NUM.reduce((o,k)=>(o[k]=0,o),{n,mot:{},fue:{},tip:{},last:''}));
+const add=(o,k,v)=>{if(k)o[k]=(o[k]||0)+v};
+/* Datos del mes = suma de registros diarios + metas. Proyección = resultado ÷ días hábiles transcurridos × días hábiles del mes */
+function mdata(p){
+  const A={},get=n=>A[slug(n)]||(A[slug(n)]=blank(n)),rs=DB.reg.filter(r=>r.fecha.slice(0,7)===p).sort((a,b)=>a.fecha<b.fecha?-1:1);
+  rs.forEach(r=>{const a=get(r.vendedor);['leads','vis','cot','cie','venta','kwp','inst','perd'].forEach(f=>a[f]+=Number(r[f])||0);
+    if(r.pipeA!=='')a.pipeA=Number(r.pipeA)||0;if(r.pipeN!=='')a.pipeN=Number(r.pipeN)||0;
+    if(r.ciclo!==''&&Number(r.cie)>0){a.cs+=Number(r.ciclo)*Number(r.cie);a.cn+=Number(r.cie)}
+    if(r.motivo&&r.motivo!=='Ninguno')add(a.mot,r.motivo,Number(r.perd)||0);
+    if(r.fuente){const f=a.fue[r.fuente]||(a.fue[r.fuente]={leads:0,cie:0});f.leads+=Number(r.leads)||0;f.cie+=Number(r.cie)||0}
+    if(r.tipo)add(a.tip,r.tipo,Number(r.cie)||0);a.last=r.fecha});
+  let dias=0;DB.met.filter(m=>m.periodo===p).forEach(m=>{const a=get(m.vendedor);a.meta=Number(m.meta)||0;a.metaK=Number(m.metaK)||0;a.metaP=Number(m.metaP)||0;if(!dias&&Number(m.dias)>0)dias=Number(m.dias)});
+  const [s,e]=pb(p),dh=dias||wd(s,e),t0=at(nowISO());t0.setHours(0,0,0,0);let dt=t0<s?0:Math.min(wd(s,t0<e?t0:e),dh);if(demo&&p===cur())dt=Math.round(dh/2);
+  return{list:Object.values(A),dh,dt,rs,p}}
+function c(v,d){d=d||D;const m=M(),res=Number(v[m.r])||0,mt=Number(v[m.m])||0,cum=mt?res/mt*100:0,fc=d.dt>0?res/d.dt*d.dh:0,pr=mt?fc/mt*100:0,r=(a,b)=>b?a/b*100:0,g=P('verde',100),y=P('amarillo',85);
+  return{...v,res,mt,cum,fc,pr,l2v:r(v.vis,v.leads),v2c:r(v.cot,v.vis),c2c:r(v.cie,v.cot),conv:r(v.cie,v.leads),tk:m.tk(v),pipe:v.pipeA*P('peso_cot',.3)+v.pipeN*P('peso_neg',.6),ciclo:v.cn?v.cs/v.cn:0,loss:r(v.perd,v.perd+v.cie),sem:mt?(pr>=g?'g':pr>=y?'y':'r'):'n'}}
+const L=d=>(d||D).list.map(v=>c(v,d));
+function tot(d){d=d||D;const t=blank('Equipo');d.list.forEach(v=>{NUM.forEach(k=>t[k]+=Number(v[k])||0);['mot','tip'].forEach(o=>Object.keys(v[o]).forEach(k=>add(t[o],k,v[o][k])));Object.keys(v.fue).forEach(k=>{const f=t.fue[k]||(t.fue[k]={leads:0,cie:0});f.leads+=v.fue[k].leads;f.cie+=v.fue[k].cie})});return c(t,d)}
+/* ---- textos automáticos ---- */
+const SC={g:'var(--g)',y:'var(--y)',r:'var(--r)',n:'var(--dim)'},SL={g:'En línea',y:'En riesgo',r:'Bajo la meta',n:'Sin meta'},PAL=['#0F6E56','#2F6FDB','#C98A00','#B23A8F','#D9622B','#5B6BC0','#2A9D8F','#8D6E63','#E4572E','#6C757D'];
+const LB={l2v:'lead→visita',v2c:'visita→cotización',c2c:'cotización→cierre'},ACT={l2v:'reforzar el contacto de leads y el agendamiento de visitas',v2c:'acompañar en las visitas y mejorar la calidad de la cotización',c2c:'acompañar en negociaciones y cierres'};
+const weak=(v,T)=>['l2v','v2c','c2c'].map(k=>[k,T[k]?v[k]/T[k]:1]).sort((a,b)=>a[1]-b[1])[0][0];
+function prevCmp(v){const pd=mdata(prevP(per)),pv=pd.list.map(x=>c(x,pd)).find(x=>slug(x.n)===slug(v.n));return pv&&pv.res>0?(v.fc-pv.res)/pv.res*100:null}
+function dx(v,T){const good=[],bad=[],m=M();
+  [['conv','conversión total'],['l2v',LB.l2v],['v2c',LB.v2c],['c2c',LB.c2c]].forEach(([k,l])=>{if(v[k]>=T[k]*1.1)good.push(l+' ('+fP(v[k])+' vs '+fP(T[k])+' del equipo)');else if(v[k]<=T[k]*.9)bad.push(l+' ('+fP(v[k])+' vs '+fP(T[k])+')')});
+  if(v.tk>=T.tk*1.1)good.push(m.tl.toLowerCase()+' ('+m.tf(v.tk)+')');else if(v.tk&&v.tk<=T.tk*.9)bad.push(m.tl.toLowerCase()+' ('+m.tf(v.tk)+' vs '+m.tf(T.tk)+')');
+  if(v.sem==='n')return v.n+' no tiene meta cargada en '+m.l+' para este mes: cárgala en «Datos → Meta del mes» para evaluar su cumplimiento.';
+  const sem={g:'va en línea con su meta',y:'está en zona de riesgo: puede salvarse si acelera, o caer a rojo',r:'va bajo la meta'}[v.sem],pc=prevCmp(v);
+  return v.n+' '+sem+' (proyecta '+fP(v.pr)+' de su meta en '+m.l+'). '+(good.length?'Destaca en '+good.join(', '):'No destaca aún en ningún KPI')+(bad.length?', pero está bajo el equipo en '+bad.join(', ')+'.':'.')+(pc==null?'':' Su proyección está '+fP(Math.abs(pc))+(pc>=0?' sobre':' bajo')+' el resultado del mes anterior.')+' Foco sugerido: '+ACT[weak(v,T)]+'.'}
+function gdx(A,T){const n={g:0,y:0,r:0,n:0},cnt={l2v:0,v2c:0,c2c:0},B=A.filter(v=>v.sem!=='n');A.forEach(v=>{n[v.sem]++;cnt[weak(v,T)]++});
+  if(!B.length)return'Aún no hay metas cargadas en '+M().l+' para este mes: cárgalas en «Datos → Meta del mes».';
+  const s=[...B].sort((a,b)=>b.pr-a.pr),w=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0],top=[...A].sort((a,b)=>b.res-a.res).slice(0,2),sh2=T.res?top.reduce((a,v)=>a+v.res,0)/T.res*100:0;
+  return'La sucursal proyecta '+fP(T.pr)+' de su meta (en '+M().l+'): '+n.g+' asesor(es) en verde, '+n.y+' en amarillo y '+n.r+' en rojo'+(n.n?' ('+n.n+' sin meta)':'')+'. Mejor proyección: '+s[0].n+' ('+fP(s[0].pr)+'); más rezagado: '+s[s.length-1].n+' ('+fP(s[s.length-1].pr)+'). La etapa donde más asesores quedan bajo el equipo es '+LB[w]+': conviene '+ACT[w]+'.'+(A.length>3&&sh2>55?' Atención: '+top.map(v=>v.n).join(' y ')+' concentran '+fP(sh2)+' del resultado.':'')}
+function findings(A,T){const f=[],B=A.filter(v=>v.sem!=='n');
+  const mot=Object.entries(T.mot).sort((a,b)=>b[1]-a[1]),mt=mot.reduce((s,x)=>s+x[1],0);
+  if(mt)f.push(['Principal motivo de pérdida: «'+mot[0][0]+'» ('+fP(mot[0][1]/mt*100)+' de las oportunidades perdidas).','Preparar argumentario y alternativas para el caso «'+mot[0][0].toLowerCase()+'».']);
+  const fu=Object.entries(T.fue).filter(x=>x[1].leads>=10).map(x=>[x[0],x[1].cie/x[1].leads*100]).sort((a,b)=>b[1]-a[1]);
+  if(fu.length>1)f.push(['La fuente que mejor convierte es «'+fu[0][0]+'» ('+fP(fu[0][1])+') y la más débil «'+fu[fu.length-1][0]+'» ('+fP(fu[fu.length-1][1])+').','Reforzar la prospección en la mejor fuente y revisar la calificación de leads de la más débil.']);
+  const tp=Object.entries(T.tip).sort((a,b)=>b[1]-a[1]),tt=tp.reduce((s,x)=>s+x[1],0);
+  if(tt)f.push(['El tipo de cliente que más cierres aporta es «'+tp[0][0]+'» ('+fP(tp[0][1]/tt*100)+').','Priorizar la prospección en ese segmento y diseñar una oferta específica para los demás.']);
+  if(B.length){const w={l2v:0,v2c:0,c2c:0};A.forEach(v=>w[weak(v,T)]++);const k=Object.keys(w).sort((a,b)=>w[b]-w[a])[0];
+    f.push(['La etapa más débil del equipo es '+LB[k]+'.','Capacitar al equipo en esa etapa: '+ACT[k]+'.']);
+    const lo=[...B].sort((a,b)=>a.pr-b.pr)[0],hi=[...A].filter(v=>v.cie).sort((a,b)=>b.conv-a.conv)[0];
+    f.push([lo.n+' es quien más necesita apoyo (proyecta '+fP(lo.pr)+')'+(hi&&hi!==lo?'; '+hi.n+' tiene la mejor conversión ('+fP(hi.conv)+').':'.'),'Programar visitas conjuntas y que '+(hi&&hi!==lo?hi.n:'el mejor del equipo')+' comparta su método.'])}
+  if(mode==='p'&&T.mt){const fal=Math.max(T.mt-T.res,0),cov=fal?T.pipe/fal*100:100;f.push(['El pipeline ponderado ('+fM(T.pipe)+') cubre '+fP(cov)+' de lo que falta para la meta.',cov<100?'Generar más cotizaciones y acelerar las negociaciones abiertas.':'Asegurar el cierre de lo que está en negociación.'])}
+  return f}
+/* ---- piezas visuales ---- */
+const hb=(l,a,max,col,t)=>`<div class="hb"><span title="${E(l)}">${E(l)}</span><div class="tr"><i style="width:${max?Math.max(0,Math.min(a/max*100,100)):0}%;background:${col}"></i></div><b>${t}</b></div>`;
+function dn(p){let a=0;const t=p.reduce((s,x)=>s+x[1],0)||1,g=p.map(x=>{const s=a;a+=x[1]/t*100;return x[2]+' '+s+'% '+a+'%'}).join(',');
+  return`<div class="dn"><div class="ring" style="background:conic-gradient(${g})"></div><div>${p.map(x=>`<div class="lg"><i style="background:${x[2]}"></i>${E(x[0])} <b>${fP(x[1]/t*100)}</b></div>`).join('')}</div></div>`}
+const dnO=(o,m)=>{const e=Object.entries(o).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);return e.length?dn(e.map((x,i)=>[x[0],x[1],PAL[i%10]])):'<div class="sub">'+(m||'Sin datos aún.')+'</div>'};
+const fueRows=f=>{const e=Object.entries(f).filter(x=>x[1].leads>0).map(x=>[x[0],x[1].cie/x[1].leads*100,x[1]]).sort((a,b)=>b[1]-a[1]),mx=Math.max(...e.map(x=>x[1]),1);return e.length?e.map((x,i)=>hb(x[0],x[1],mx,PAL[i%10],fP(x[1])+' ('+x[2].cie+'/'+x[2].leads+')')).join(''):'<div class="sub">Sin datos aún.</div>'};
+const k=(l,v)=>`<div class="k"><b>${v}</b><span>${l}</span></div>`,pill=s=>`<span class="pill" style="background:${SC[s]}">${SL[s]}</span>`;
+const kpis=v=>{const m=M();return`<div class="kp">${k('Meta ('+m.l+')',m.f(v.mt))+k(m.nm,m.f(v.res))+k('Cumplimiento real',fP(v.cum))+k('Proyección cierre',fP(v.pr))+k('Conversión lead→cierre',fP(v.conv))+k(m.tl,m.tf(v.tk))}</div>`};
+const kpis2=v=>`<div class="kp">${k('Pipeline ponderado',fM(v.pipe))+k('Cotizaciones abiertas',fM(v.pipeA))+k('Ciclo de venta',v.ciclo?nf(v.ciclo)+' días':'—')+k('Oport. perdidas',v.perd+' ('+fP(v.loss)+')')}</div>`;
+const per_=()=>`${per} · Día hábil ${D.dt} de ${D.dh} · Medido en ${M().l}`;
+let CP='';const cp=()=>{(navigator.clipboard?navigator.clipboard.writeText(CP):Promise.reject()).then(()=>toast('Mensaje copiado')).catch(()=>prompt('Copia el mensaje:',CP))};
+const acts=()=>`<div class="row noprint"><button class="btn p" onclick="cp()">📋 Copiar mensaje</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(CP)}">📲 WhatsApp</a><button class="btn" onclick="print()">🖨️ Imprimir / PDF</button></div>`;
+const none=()=>`<div class="c"><div class="empty">No hay datos para ${per}.<br>Crea la meta del mes y registra la actividad en ✏️ Datos${cfg.url?'':', o conecta tu Sheet con ☁️'}.</div></div>`;
+function lineChart(ser,n,mx){const W=330,H=170,Lm=44,R=8,Tm=8,B=22,sx=i=>Lm+(W-Lm-R)*i/Math.max(n,1),sy=v=>H-B-(H-B-Tm)*Math.min(v,mx)/mx,pts=a=>a.map((y,i)=>sx(i).toFixed(1)+','+sy(y).toFixed(1)).join(' ');
+  return`<svg class="ch" viewBox="0 0 ${W} ${H}">`+[0,.5,1].map(q=>`<line x1="${Lm}" x2="${W-R}" y1="${sy(mx*q)}" y2="${sy(mx*q)}" stroke="var(--bd)"/><text x="${Lm-4}" y="${sy(mx*q)+3}" font-size="9" text-anchor="end" fill="var(--dim)">${M().s(mx*q)}</text>`).join('')+
+  `<polyline points="${pts(ser.ideal)}" fill="none" stroke="var(--dim)" stroke-dasharray="4 3" stroke-width="1.5"/><polyline points="${pts(ser.act)}" fill="none" stroke="var(--ac)" stroke-width="2.5"/><text x="${Lm}" y="${H-6}" font-size="9" fill="var(--dim)">inicio</text><text x="${W-R}" y="${H-6}" font-size="9" text-anchor="end" fill="var(--dim)">día hábil ${n}</text></svg>`}
+function series(sl){const [s,e]=pb(per),days=[];for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1))if(bd(d))days.push(iso(d));
+  const rs=D.rs.filter(r=>!sl||slug(r.vendedor)===sl),res=r=>Number(r[M().r])||0,tgt=D.list.filter(v=>!sl||slug(v.n)===sl).reduce((a,v)=>a+(Number(v[M().m])||0),0),n=days.length,now=nowISO(),act=[0],ideal=[];
+  days.forEach((d,i)=>{ideal.push(tgt*(i+1)/n);if(d<=now)act.push(rs.filter(r=>r.fecha<=d).reduce((a,r)=>a+res(r),0))});
+  return{act,ideal:[0].concat(ideal),n,tgt}}
+function trend(sl){const ps=[];let p=per;for(let i=0;i<6;i++){ps.unshift(p);p=prevP(p)}
+  return ps.map(q=>{const d=mdata(q),A=d.list.filter(v=>!sl||slug(v.n)===sl).map(v=>c(v,d));return{q,res:A.reduce((a,v)=>a+v.res,0),mt:A.reduce((a,v)=>a+v.mt,0),now:q===cur()}})}
+const trendHTML=sl=>{const t=trend(sl),m=M(),mx=Math.max(...t.map(x=>Math.max(x.res,x.mt)),1);return t.map(x=>hb(x.q+(x.now?' ·en curso':''),x.res,mx,x.mt&&x.res>=x.mt?'var(--g)':'var(--ac)',m.s(x.res)+' / '+m.s(x.mt)+(x.mt?' ('+fP(x.res/x.mt*100)+')':''))).join('')};
+/* ---- alertas de supervisión ---- */
+function alerts(){const out=[],now=nowISO();if(per!==now.slice(0,7))return out;const A=L(),isB=bd(at(now)),act=DB.ase.length?DB.ase.filter(a=>a.activo!=='No').map(a=>a.vendedor):A.map(v=>v.n);
+  if(isB){const done=new Set(DB.reg.filter(r=>r.fecha===now).map(r=>slug(r.vendedor))),miss=act.filter(n=>!done.has(slug(n)));if(miss.length)out.push({l:'y',miss,t:'Sin reporte hoy ('+miss.length+'): '+miss.join(', ')})}
+  act.forEach(n=>{const last=DB.reg.filter(r=>slug(r.vendedor)===slug(n)).map(r=>r.fecha).sort().pop();if(last&&last<now){const nx=at(last);nx.setDate(nx.getDate()+1);const g=wd(nx,at(now));if(g>=3)out.push({l:'r',t:n+' lleva '+g+' días hábiles sin registrar actividad'})}});
+  A.filter(v=>v.sem==='r').forEach(v=>out.push({l:'r',t:v.n+' va bajo la meta (proyecta '+fP(v.pr)+')'}));
+  A.filter(v=>v.sem==='n'&&(v.leads||v.venta)).forEach(v=>out.push({l:'y',t:v.n+' registra actividad pero no tiene meta en '+M().l}));
+  DB.nota.filter(n=>n.estado!=='Cumplido'&&n.limite&&n.limite<now).forEach(n=>out.push({l:'y',t:'Compromiso vencido de '+n.vendedor+': '+n.compromiso+' (límite '+n.limite+')'}));
+  return out}
+const alHTML=a=>a.length?a.map(x=>`<div class="al ${x.l}">${E(x.t)}</div>`).join(''):'<div class="al g">Sin alertas: todo al día.</div>';
+const waMiss=a=>{const m=a.find(x=>x.miss);return m?`<a class="btn sm noprint" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Recordatorio: falta tu registro diario de hoy.'+(formUrl?' Formulario: '+formUrl:''))}">📲 Recordar por WhatsApp</a>`:''};
+/* ---- pestañas ---- */
+function eq(){if(!D.list.length)return none();const A=L(),T=tot(),al=alerts().slice(0,3);
+  return kpis(T)+(al.length?`<div class="c"><h3>Alertas</h3>${alHTML(al)}${waMiss(al)}<div class="sub" style="margin-top:6px">Más detalle en 🧭 Supervisión.</div></div>`:'')+
+  `<div class="c"><h3>Semáforo del equipo</h3><div class="sub">${per_()} · Verde: proyecta ≥${P('verde',100)}% · Amarillo: ${P('amarillo',85)}–${P('verde',100)}% (puede salvarse o caer) · Rojo: &lt;${P('amarillo',85)}%</div><div class="tw"><table><thead><tr><th>Asesor</th><th>${M().nm}</th><th>Cumpl.</th><th>Proyección</th><th>vs mes ant.</th><th>Conversión</th><th>${M().tl}</th></tr></thead><tbody>${[...A].sort((a,b)=>b.pr-a.pr).map(v=>{const pc=prevCmp(v);return`<tr><td><span class="dot" style="background:${SC[v.sem]}"></span>${E(v.n)}</td><td>${M().f(v.res)}</td><td>${fP(v.cum)}</td><td><b style="color:${SC[v.sem]}">${v.sem==='n'?'—':fP(v.pr)}</b></td><td>${pc==null?'—':(pc>=0?'▲ ':'▼ ')+fP(Math.abs(pc))}</td><td>${fP(v.conv)}</td><td>${M().tf(v.tk)}</td></tr>`}).join('')}</tbody></table></div><div class="sub" style="margin-top:6px">«vs mes ant.»: proyección de este mes frente al resultado final del mes anterior.</div></div>`}
+function av(){if(!D.list.length)return none();const A=L(),m=M(),sl=avSel,se=series(sl),mx=Math.max(se.tgt,...se.act,...se.ideal,1),rem=Math.max(D.dh-D.dt,0),T=tot();
+  const rows=[...A,T].map(v=>{const need=v.mt/D.dh,pace=D.dt?v.res/D.dt:0,falta=Math.max(v.mt-v.res,0);return`<tr><td>${E(v.n)}</td><td>${m.f(v.mt)}</td><td>${m.f(need)}</td><td>${m.f(pace)}</td><td>${m.f(falta)}</td><td>${m.f(rem?falta/rem:falta)}</td><td data-sd data-mt="${v.mt}">${sd>=1?m.f(v.mt/sd):'—'}</td></tr>`}).join('');
+  return`<div class="c"><h3>Avance diario acumulado vs ritmo ideal</h3><div class="sub">${per_()}. Línea verde: acumulado real. Línea punteada: ritmo necesario para llegar a la meta.</div><div class="row noprint"><select onchange="avSel=this.value;render()"><option value="">Todo el equipo</option>${A.map(v=>`<option value="${slug(v.n)}"${slug(v.n)===sl?' selected':''}>${E(v.n)}</option>`).join('')}</select></div>${lineChart(se,se.n,mx)}</div>`+
+  `<div class="c"><h3>Venta diaria necesaria y estrés de días</h3><div class="sub">«Necesaria/día» = meta ÷ días hábiles del mes (${D.dh}). «Restante» = lo que falta ÷ ${rem} días hábiles que quedan. El estrés es solo para mirar: no cambia ningún dato.</div><div class="row noprint">Estresar con <input type="number" min="1" step="1" inputmode="numeric" style="width:90px;text-align:center" placeholder="${D.dh}" value="${sd||''}" oninput="sd=parseInt(this.value,10)||0;document.querySelectorAll('[data-sd]').forEach(c=>c.textContent=sd>=1?M().f(c.dataset.mt/sd):'—')"> días hábiles</div><div class="tw"><table><thead><tr><th>Asesor</th><th>Meta</th><th>Necesaria / día</th><th>Ritmo actual / día</th><th>Falta</th><th>Necesaria restante / día</th><th>Con días estresados</th></tr></thead><tbody>${rows}</tbody></table></div></div>`}
+function gr(){if(!D.list.length)return none();const A=L(),T=tot(),m=M(),mx=Math.max(T.mt,T.res,T.fc,1),msg=gdx(A,T),fi=findings(A,T);
+  CP='*Informe grupal* · '+per+' ('+m.l+')\nMeta: '+m.f(T.mt)+'\n'+m.nm+': '+m.f(T.res)+' ('+fP(T.cum)+')\nProyección: '+fP(T.pr)+'\nPipeline ponderado: '+fM(T.pipe)+'\n\n'+msg+(fi.length?'\n\nHallazgos:\n'+fi.map(x=>'• '+x[0]+' '+x[1]).join('\n'):'');
+  return`<div class="c"><h3>Informe grupal ${pill(T.sem)}</h3><div class="sub">${per_()}</div></div>`+kpis(T)+kpis2(T)+
+  `<div class="c"><h3>Meta vs resultado de la sucursal</h3>${hb('Meta',T.mt,mx,'var(--dim)',m.f(T.mt))+hb(m.nm,T.res,mx,SC[T.sem],m.f(T.res))+hb('Proyección',T.fc,mx,SC[T.sem],m.f(T.fc))}</div>`+
+  `<div class="c"><h3>Proyección de cierre por asesor (% de su meta)</h3>${[...A].filter(v=>v.sem!=='n').sort((a,b)=>b.pr-a.pr).map(v=>hb(v.n,v.pr,120,SC[v.sem],fP(v.pr))).join('')||'<div class="sub">Sin metas cargadas.</div>'}</div>`+
+  `<div class="c"><h3>Participación en el resultado</h3>${T.res?dn(A.map((v,i)=>[v.n,v.res,PAL[i%10]])):'<div class="sub">Sin resultados aún.</div>'}</div>`+
+  `<div class="c"><h3>Embudo del equipo</h3>${hb('Leads',T.leads,T.leads,PAL[1],T.leads)+hb('Visitas',T.vis,T.leads,PAL[1],T.vis+' · '+fP(T.l2v))+hb('Cotizaciones',T.cot,T.leads,PAL[2],T.cot+' · '+fP(T.v2c))+hb('Cierres',T.cie,T.leads,PAL[0],T.cie+' · '+fP(T.c2c))}</div>`+
+  `<div class="c"><h3>Motivos de pérdida</h3>${dnO(T.mot,'Sin pérdidas registradas.')}</div><div class="c"><h3>Conversión por fuente de leads</h3>${fueRows(T.fue)}</div><div class="c"><h3>Cierres por tipo de cliente</h3>${dnO(T.tip)}</div>`+
+  `<div class="c"><h3>Tendencia de los últimos 6 meses</h3>${trendHTML('')}</div>`+
+  `<div class="c"><h3>Diagnóstico grupal</h3><div class="msg">${E(msg)}</div></div>`+(fi.length?`<div class="c"><h3>Hallazgos y propuestas</h3>${fi.map(x=>`<div class="msg"><b>${E(x[0])}</b><br>${E(x[1])}</div>`).join('')}</div>`:'')+acts()}
+function as(){if(!D.list.length)return none();const A=L(),T=tot();if(sel>=A.length)sel=0;const v=A[sel],m=M(),mx=Math.max(v.mt,v.res,v.fc,1),msg=dx(v,T),mine=DB.nota.filter(n=>slug(n.vendedor)===slug(v.n)&&n.estado!=='Cumplido');
+  CP='*Informe '+v.n+'* · '+per+' ('+m.l+')\nMeta: '+m.f(v.mt)+'\n'+m.nm+': '+m.f(v.res)+' ('+fP(v.cum)+')\nProyección: '+fP(v.pr)+'\nConversión: '+fP(v.conv)+'\nPipeline ponderado: '+fM(v.pipe)+'\n\n'+msg+(mine.length?'\n\nCompromisos pendientes:\n'+mine.map(n=>'• '+n.compromiso+(n.limite?' (hasta '+n.limite+')':'')).join('\n'):'');
+  return`<div class="row noprint"><select onchange="sel=+this.value;render()">${A.map((x,i)=>`<option value="${i}"${i===sel?' selected':''}>${E(x.n)}</option>`).join('')}</select></div>`+
+  `<div class="c"><h3>Informe · ${E(v.n)} ${pill(v.sem)}</h3><div class="sub">${per_()}</div></div>`+kpis(v)+kpis2(v)+
+  `<div class="c"><h3>Meta vs resultado</h3>${hb('Meta',v.mt,mx,'var(--dim)',m.f(v.mt))+hb(m.nm,v.res,mx,SC[v.sem],m.f(v.res))+hb('Proyección',v.fc,mx,SC[v.sem],m.f(v.fc))}</div>`+
+  `<div class="c"><h3>Embudo vs promedio del equipo</h3>${hb('Lead→visita',v.l2v,100,PAL[1],fP(v.l2v)+' (eq. '+fP(T.l2v)+')')+hb('Visita→cotiz.',v.v2c,100,PAL[2],fP(v.v2c)+' (eq. '+fP(T.v2c)+')')+hb('Cotiz.→cierre',v.c2c,100,PAL[0],fP(v.c2c)+' (eq. '+fP(T.c2c)+')')}</div>`+
+  `<div class="c"><h3>Cumplimiento y destino de cotizaciones</h3><div class="dn">${dn([['Meta lograda',Math.min(v.cum,100),SC[v.sem]],['Falta',Math.max(100-v.cum,0),'var(--bd)']])}${dn([['Cerradas',v.cie,PAL[0]],['Sin cerrar',Math.max(v.cot-v.cie,0),PAL[2]]])}</div></div>`+
+  `<div class="c"><h3>Motivos de pérdida</h3>${dnO(v.mot,'Sin pérdidas registradas.')}</div><div class="c"><h3>Conversión por fuente de leads</h3>${fueRows(v.fue)}</div><div class="c"><h3>Cierres por tipo de cliente</h3>${dnO(v.tip)}</div>`+
+  `<div class="c"><h3>Tendencia de los últimos 6 meses</h3>${trendHTML(slug(v.n))}</div>`+
+  `<div class="c"><h3>Mensaje para el asesor</h3><div class="msg">${E(msg)}</div>${mine.length?'<b>Compromisos pendientes</b>'+mine.map(n=>`<div class="al">${E(n.compromiso)}${n.limite?' · hasta '+n.limite:''}</div>`).join(''):''}</div>`+acts()}
+function su(){const A=L(),T=tot(),al=alerts(),fi=D.list.length?findings(A,T):[],now=nowISO(),pend=DB.nota.filter(n=>n.estado!=='Cumplido').sort((a,b)=>(a.limite||'9')<(b.limite||'9')?-1:1),done=DB.nota.filter(n=>n.estado==='Cumplido').slice(0,5);
+  const by={};pend.forEach(n=>(by[n.vendedor]=by[n.vendedor]||[]).push(n));
+  CP='*Plan de acción del equipo*\n'+(Object.keys(by).length?Object.keys(by).map(a=>a+':\n'+by[a].map(n=>'• '+n.compromiso+(n.limite?' (hasta '+n.limite+')':'')).join('\n')).join('\n\n'):'Sin compromisos pendientes.');
+  const nrow=n=>`<tr><td>${E(n.vendedor)}</td><td style="text-align:left">${E(n.compromiso)}${n.nota?'<div class="sub" style="margin:0">'+E(n.nota)+'</div>':''}</td><td>${n.limite||'—'}${n.limite&&n.limite<now&&n.estado!=='Cumplido'?' ⚠️':''}</td><td>${n.estado==='Cumplido'?'✔ Cumplido':'<button class="btn sm" onclick="doneNota(\''+n.id+'\')">Marcar cumplido</button>'}${Q.nota[n.id]?' ⏳':''}</td><td><button class="btn sm" onclick="openItem('nota','${n.id}')">✏️</button></td></tr>`;
+  return`<div class="c"><h3>Alertas del día</h3>${alHTML(al)}${waMiss(al)}</div>`+
+  `<div class="c"><h3>Hallazgos y propuestas de mejora</h3>${fi.length?fi.map(x=>`<div class="msg"><b>${E(x[0])}</b><br>${E(x[1])}</div>`).join(''):'<div class="sub">Aún no hay datos suficientes en este mes.</div>'}</div>`+
+  `<div class="c"><h3>Notas de 1 a 1 y compromisos</h3><div class="row noprint"><button class="btn p" onclick="openItem('nota',null)">＋ Nueva nota / compromiso</button></div><div class="tw">${DB.nota.length?`<table><thead><tr><th>Asesor</th><th>Compromiso</th><th>Límite</th><th>Estado</th><th></th></tr></thead><tbody>${pend.map(nrow).join('')}${done.map(nrow).join('')}</tbody></table>`:'<div class="empty">Sin notas todavía.</div>'}</div></div>`+
+  `<div class="c"><h3>Plan de acción</h3>${Object.keys(by).length?Object.keys(by).map(a=>`<div class="msg"><b>${E(a)}</b>${by[a].map(n=>`<br>• ${E(n.compromiso)}${n.limite?' <i>(hasta '+n.limite+')</i>':''}`).join('')}</div>`).join('')+acts():'<div class="sub">Sin compromisos pendientes.</div>'}</div>`}
+function da(){
+  const rr=DB.reg.filter(r=>r.fecha.slice(0,7)===per&&(!fdate||r.fecha===fdate)).sort((a,b)=>a.fecha<b.fecha?1:-1),mm=DB.met.filter(x=>x.periodo===per),yr=per.slice(0,4),fer=(DB.fer.length?DB.fer:FER0.map(x=>nfer({fecha:x[0],nombre:x[1]}))).filter(f=>f.fecha.slice(0,4)===yr).sort((a,b)=>a.fecha<b.fecha?-1:1);
+  return`<div class="c"><h3>Formulario de registro diario</h3>${formUrl?`<div class="sub" style="word-break:break-all">${E(formUrl)}</div><div class="row noprint"><button class="btn p" onclick="CP='${E(formUrl)}';cp()">📋 Copiar enlace</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Registro diario de ventas: '+formUrl)}">📲 Enviar por WhatsApp</a><a class="btn" target="_blank" rel="noopener" href="${E(formUrl)}">Abrir</a></div>`:'<div class="sub">Aún no hay formulario. En tu Sheet: menú «Panel Solar» → «1. Crear formulario y activar automatismos». El enlace aparecerá aquí al sincronizar.</div>'}<div class="sub">Lo que envíen los vendedores llega solo a «Registros» y se suma al mes. Si alguien envía dos veces el mismo día, vale el último envío.</div></div>`+
+  `<div class="c"><h3>Carga manual</h3><div class="row"><button class="btn p" onclick="openItem('reg',null)">＋ Registro diario</button><button class="btn" onclick="openItem('met',null)">🎯 Meta del mes</button>${cfg.url||DB.reg.length||DB.met.length?'':'<button class="btn" onclick="loadDemo()">Cargar datos de ejemplo</button>'}</div></div>`+
+  `<div class="c"><h3>Metas de ${per}</h3><div class="tw">${mm.length?`<table><thead><tr><th>Asesor</th><th>Meta $</th><th>Meta kWp</th><th>Meta proy.</th><th>Días háb.</th><th></th></tr></thead><tbody>${mm.map(x=>`<tr><td>${E(x.vendedor)}${Q.met[x.id]?' ⏳':''}</td><td>${fM(x.meta)}</td><td>${fK(x.metaK)}</td><td>${x.metaP===''?0:x.metaP}</td><td>${x.dias===''?'auto ('+D.dh+')':x.dias}</td><td><button class="btn sm" onclick="openItem('met','${x.id}')">✏️</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sin metas este mes.</div>'}</div></div>`+
+  `<div class="c"><h3>Registros de ${per}</h3><div class="row"><span class="sub" style="margin:0">Ver solo un día:</span><input type="date" value="${fdate}" onchange="fdate=this.value;render()"><button class="btn" onclick="fdate='';render()">Ver todos</button></div><div class="tw">${rr.length?`<table><thead><tr><th>Fecha</th><th>Asesor</th><th>Leads</th><th>Visitas</th><th>Cotiz.</th><th>Cierres</th><th>Venta $</th><th>kWp</th><th>Instal.</th><th></th></tr></thead><tbody>${rr.map(r=>`<tr><td>${r.fecha}${Q.reg[r.id]?' ⏳':''}</td><td>${E(r.vendedor)}</td><td>${r.leads}</td><td>${r.vis}</td><td>${r.cot}</td><td>${r.cie}</td><td>${fM(r.venta)}</td><td>${nf(r.kwp)}</td><td>${r.inst}</td><td><button class="btn sm" onclick="openItem('reg','${r.id}')">✏️</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sin registros'+(fdate?' en ese día':' este mes')+'.</div>'}</div></div>`+
+  `<div class="c"><h3>Asesores y control del formulario</h3><div class="sub">Si cargas el correo de Google de cada asesor, el formulario solo acepta envíos de ese correo y los asocia a su nombre. «Activo = No» lo saca del desplegable sin perder su historial. Para renombrar a alguien conservando el historial, usa el menú «Panel Solar» de la Sheet.</div><div class="tw">${DB.ase.length?`<table><thead><tr><th>Asesor</th><th>Correo</th><th>Activo</th><th></th></tr></thead><tbody>${DB.ase.map(a=>`<tr><td>${E(a.vendedor)}</td><td>${E(a.correo)||'—'}</td><td>${a.activo}</td><td><button class="btn sm" onclick="openItem('ase','${a.id}')">✏️</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Se llena solo al crear las metas.</div>'}</div></div>`+
+  `<div class="c"><h3>Parámetros</h3><div class="sub">Umbrales del semáforo (% de proyección) y probabilidad de cierre usada en el pipeline ponderado.</div><div class="row"><label>Verde desde <input id="pv" type="number" style="width:70px" value="${P('verde',100)}"></label><label>Amarillo desde <input id="py" type="number" style="width:70px" value="${P('amarillo',85)}"></label><label>Prob. cotizaciones <input id="pc" type="number" step="0.05" style="width:70px" value="${P('peso_cot',.3)}"></label><label>Prob. negociación <input id="pn" type="number" step="0.05" style="width:70px" value="${P('peso_neg',.6)}"></label><button class="btn p" onclick="saveParams()">Guardar</button></div></div>`+
+  `<div class="c"><h3>Feriados ${yr} (no cuentan como días hábiles)</h3><div class="sub">Precargados con los feriados nacionales de Chile: verifícalos con el calendario oficial.</div><div class="row noprint"><input type="date" id="fd1"><input id="fn1" placeholder="Nombre (opcional)"><button class="btn p" onclick="addFer()">＋ Agregar</button></div>${fer.map(f=>`<span class="al" style="display:inline-block;margin:3px">${f.fecha} · ${E(f.nombre)} <button class="btn sm" onclick="rmFer('${f.fecha}')">🗑️</button></span>`).join('')}</div>`}
+const V={eq,av,gr,as,su,da};
+/* ---- formularios ---- */
+const MOT=['','Ninguno','Precio','Financiamiento','Competencia','Sin respuesta del cliente','Decidió esperar','Otro'],FUE=['','Redes sociales','Referido','Sitio web','Llamada entrante','Prospección en terreno','Evento o feria','Otro'],TIP=['','Hogar','Pyme','Agrícola','Industrial','Mixto'];
+const RF=[['vendedor','Asesor *','text'],['fecha','Fecha *','date'],['leads','Leads nuevos','number'],['vis','Visitas realizadas','number'],['cot','Cotizaciones enviadas','number'],['cie','Cierres (ventas ganadas)','number'],['venta','Venta neta sin IVA ($)','number'],['kwp','kWp vendidos','number'],['inst','Proyectos instalados','number'],['perd','Oportunidades perdidas','number'],['motivo','Motivo principal de pérdida','sel',MOT],['fuente','Fuente principal de los leads','sel',FUE],['tipo','Tipo de cliente principal','sel',TIP],['pipeA','Monto en cotizaciones abiertas ($)','number'],['pipeN','Monto en negociación avanzada ($)','number'],['ciclo','Ciclo promedio de los cierres (días)','number'],['obs','Observaciones','area']];
+const MF=[['periodo','Mes *','month'],['vendedor','Asesor *','text'],['meta','Meta en pesos ($)','number'],['metaK','Meta en kWp','number'],['metaP','Meta en proyectos instalados','number'],['dias','Días hábiles del mes (opcional, si hay feriados no cargados)','number']];
+const NF=[['vendedor','Asesor *','text'],['compromiso','Compromiso acordado *','area'],['limite','Fecha límite','date','clr'],['estado','Estado','sel',['Pendiente','Cumplido']],['nota','Nota del 1 a 1','area']];
+const AF=[['vendedor','Asesor','text'],['correo','Correo de Google (verifica el formulario)','email'],['activo','Activo','sel',['Sí','No']]];
+const CF={reg:{p:'r',fs:RF,lock:['vendedor','fecha'],ti:['＋ Registro diario','Editar registro'],err:'Falta el asesor o la fecha'},met:{p:'m',fs:MF,lock:['vendedor','periodo'],ti:['🎯 Meta del mes','Editar meta'],err:'Falta el mes, el asesor o al menos una meta'},nota:{p:'n',fs:NF,lock:[],ti:['＋ Nota de 1 a 1','Editar nota'],err:'Falta el asesor o el compromiso'},ase:{p:'a',fs:AF,lock:['vendedor'],ti:['Asesor','Editar asesor'],err:'Datos incompletos'}};
+const fld=(p,[k,l,t,o])=>`<div class="f"><label>${l}</label>${t==='area'?`<textarea id="${p}_${k}" rows="2"></textarea>`:t==='sel'?`<select id="${p}_${k}">${o.map(x=>`<option value="${E(x)}">${E(x)||'—'}</option>`).join('')}</select>`:t==='date'&&o==='clr'?`<div class="r2"><input id="${p}_${k}" type="date"><button type="button" class="btn" onclick="document.getElementById('${p}_${k}').value=''">Quitar fecha</button></div>`:`<input id="${p}_${k}" type="${t}"${t==='number'?' step="any" inputmode="decimal"':''}${k==='vendedor'?' list="vl" autocomplete="off"':''}>`}</div>`;
+const readForm=(p,fs)=>fs.reduce((o,f)=>(o[f[0]]=$('#'+p+'_'+f[0]).value,o),{});
+const names=()=>{const n={};DB.reg.concat(DB.met,DB.ase).forEach(x=>{if(x.vendedor)n[slug(x.vendedor)]=x.vendedor});return n};
+const lastV=()=>(D.list[0]||{}).n||Object.values(names())[0]||'';
+const canAdd=o=>{const n=names();return n[slug(o.vendedor)]||Object.keys(n).length<10||(toast('Máximo 10 asesores'),false)};
+const defs=(t,k)=>t==='reg'?(k==='fecha'?(per===cur()?today():per+'-01'):k==='vendedor'?lastV():''):t==='met'?(k==='periodo'?per:k==='vendedor'?lastV():''):t==='nota'?(k==='estado'?'Pendiente':k==='vendedor'?lastV():''):'';
+function openItem(t,id){const c=CF[t],o=id?DB[t].find(x=>x.id===id):null,m=$('#m'+t);ed[t]=o?o.id:null;
+  c.fs.forEach(f=>$('#'+c.p+'_'+f[0]).value=o?o[f[0]]:defs(t,f[0]));c.lock.forEach(k=>$('#'+c.p+'_'+k).disabled=!!o);
+  m.querySelector('.ti').textContent=c.ti[o?1:0];if(t!=='ase')m.querySelector('.del').style.display=o?'':'none';m.classList.add('on')}
+function saveItem(t){const c=CF[t],o=NORM[t](readForm(c.p,c.fs)),old=ed[t]?DB[t].find(x=>x.id===ed[t]):null;
+  if(t==='nota'){o.id=ed[t]||'N:'+Date.now().toString(36);o.fecha=old?old.fecha:nowISO()}
+  if(t==='met'&&!(o.meta>0||o.metaK>0||o.metaP>0)){toast(c.err);return}
+  if(!OKF[t](o)){toast(c.err);return}if(t!=='ase'&&!canAdd(o))return;
+  qs(t,o);if(t==='reg')per=o.fecha.slice(0,7);if(t==='met')per=o.periodo;$('#m'+t).classList.remove('on');render();statusOk();toast('Guardado');push()}
+function delItem(t){const x=DB[t].find(r=>r.id===ed[t]);if(!x)return;
+  const desc=t==='reg'?'el registro de '+x.vendedor+' del '+x.fecha:t==='met'?'la meta de '+x.vendedor+' ('+x.periodo+')':'esta nota de '+x.vendedor;
+  if(!confirm('¿Eliminar '+desc+'?\n\nTambién se borra de la Google Sheet.'))return;
+  delX(t,t==='reg'?x.fecha:t==='met'?x.periodo:x.id,t==='nota'?'':x.vendedor,x.id,()=>{$('#m'+t).classList.remove('on');render();if(cfg.url)statusOk();toast('Eliminado')})}
+function doneNota(id){const n=DB.nota.find(x=>x.id===id);if(!n)return;qs('nota',{...n,estado:'Cumplido'});render();statusOk();toast('Compromiso cumplido ✔');push()}
+function saveParams(){[['verde','pv'],['amarillo','py'],['peso_cot','pc'],['peso_neg','pn']].forEach(([cl,id])=>{const old=DB.par.find(p=>p.clave===cl);qs('par',npar({clave:cl,valor:$('#'+id).value,desc:old?old.desc:''}))});render();statusOk();toast('Parámetros guardados');push()}
+function addFer(){const f=nd($('#fd1').value);if(!f){toast('Elige la fecha del feriado');return}qs('fer',nfer({fecha:f,nombre:$('#fn1').value||'Feriado'}));refHol();render();statusOk();push()}
+function rmFer(f){delX('fer',f,'','F:'+f,()=>{refHol();render()})}
+function loadDemo(){const cm=cur(),[s,e]=pb(cm);refHol();const bdays=[];for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1))if(bd(d))bdays.push(iso(d));
+  const dh=bdays.length,dt=Math.max(2,Math.round(dh/2)),days=bdays.slice(0,dt);DB=empty();Q=emptyQ();
+  const SP=[['Camila Rojas',15e6,1.08,46,.62,.70,.42],['Diego Soto',15e6,.97,40,.55,.62,.40],['Valentina Pérez',12e6,.88,52,.48,.55,.30],['Matías Núñez',12e6,.72,38,.45,.50,.26],['Javiera Silva',15e6,1.02,34,.70,.72,.45],['Felipe Araya',10e6,.80,44,.60,.45,.28]];
+  const dist=(t,w)=>{const S=w.reduce((a,b)=>a+b,0),o=w.map(x=>Math.floor(t*x/S));let r=t-o.reduce((a,b)=>a+b,0);for(let i=0;r>0;i=(i+1)%o.length,r--)o[i]++;return o};
+  SP.forEach(([nm,meta,pr,Ld,a,b,cc],ai)=>{const dd=ai===5?days.slice(0,-1):days,n=dd.length,w=dd.map((_,i)=>1+.3*Math.sin(i+ai)),f=pr*dt/dh,vis=Math.round(Ld*a),cot=Math.round(vis*b),cie=Math.max(1,Math.round(cot*cc)),mk=Math.round(meta/1.3e6*10)/10,mp=Math.round(meta/2.5e6),perdT=Math.round(Ld*.12);
+    const S={leads:dist(Ld,w),vis:dist(vis,w),cot:dist(cot,w),cie:dist(cie,w),venta:dist(Math.round(meta*f/1e4),w).map(x=>x*1e4),kwp:dist(Math.round(mk*f*10),w).map(x=>x/10),inst:dist(Math.round(mp*f),w),perd:dist(perdT,w)};
+    dd.forEach((dy,i)=>DB.reg.push(nrec({fecha:dy,vendedor:nm,leads:S.leads[i],vis:S.vis[i],cot:S.cot[i],cie:S.cie[i],venta:S.venta[i],kwp:S.kwp[i],inst:S.inst[i],perd:S.perd[i],motivo:S.perd[i]?MOT[2+((i+ai)%5)]:'Ninguno',fuente:FUE[1+((i+ai)%6)],tipo:TIP[1+((i*2+ai)%4)],pipeA:Math.round(meta*.25*(.8+.4*Math.sin(i+ai))),pipeN:Math.round(meta*.12*(.8+.4*Math.cos(i+ai))),ciclo:S.cie[i]?22+ai*3+i%5:''})));
+    DB.met.push(nmet({periodo:cm,vendedor:nm,meta,metaK:mk,metaP:mp}));DB.ase.push(nase({vendedor:nm}));
+    for(let q=1;q<=3;q++){let p=cm;for(let j=0;j<q;j++)p=prevP(p);const g=pr*(.9+.07*((ai+q)%4)),Lq=Ld*2;DB.reg.push(nrec({fecha:p+'-10',vendedor:nm,leads:Lq,vis:Math.round(Lq*a),cot:Math.round(Lq*a*b),cie:Math.max(1,Math.round(Lq*a*b*cc)),venta:Math.round(meta*g),kwp:Math.round(mk*g*10)/10,inst:Math.round(mp*g)}));DB.met.push(nmet({periodo:p,vendedor:nm,meta,metaK:mk,metaP:mp}))}});
+  DB.nota.push(nnota({id:'N:d1',fecha:days[0],vendedor:'Matías Núñez',compromiso:'Hacer 2 visitas conjuntas por semana',limite:days[Math.min(1,days.length-1)],estado:'Pendiente',nota:'Revisar cómo presenta la cotización'}),nnota({id:'N:d2',fecha:days[0],vendedor:'Felipe Araya',compromiso:'Reactivar 5 cotizaciones abiertas',limite:bdays[dt],estado:'Pendiente'}),nnota({id:'N:d3',fecha:days[0],vendedor:'Camila Rojas',compromiso:'Compartir su guion de cierre con el equipo',estado:'Cumplido'}));
+  demo=true;sv(K.demo,true);sv(K.dd,days[days.length-1]);saveAll();per=cm;render();toast('Datos de ejemplo cargados (solo en este equipo)')}
+/* ---- render ---- */
+function render(){
+  refHol();const ps=[...new Set([cur()].concat(DB.reg.map(r=>r.fecha.slice(0,7)),DB.met.map(m=>m.periodo)))].filter(Boolean).sort().reverse();
+  if(!per||!ps.includes(per))per=cur();
+  $('#per').innerHTML=ps.map(p=>`<option value="${p}">${p}</option>`).join('');$('#per').value=per;
+  D=mdata(per);$('#vl').innerHTML=Object.values(names()).map(n=>`<option value="${E(n)}">`).join('');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  $('#v').innerHTML=(demo?'<div class="warn">Datos de ejemplo guardados solo en este equipo. Al conectar tu Sheet se reemplazan por los reales.</div>':'')+(!cfg.url&&!demo?'<div class="warn">Sin conexión: lo que cargues se guarda en este equipo y se envía cuando conectes la Sheet con ☁️.</div>':'')+V[tab]()}
+/* ---- eventos ---- */
+Object.keys(CF).forEach(t=>{const c=CF[t],m=$('#m'+t);m.querySelector('.fm').innerHTML=c.fs.map(f=>fld(c.p,f)).join('');m.querySelector('.ok').onclick=()=>saveItem(t);m.querySelector('.del').onclick=()=>delItem(t)});
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;sv(K.mode,mode);render()});
+$('#per').onchange=()=>{per=$('#per').value;fdate='';render()};
+$('#bSync').onclick=()=>cfg.url?sync():$('#bCfg').click();
+$('#bCfg').onclick=()=>{$('#cSheet').value=cfg.sheetUrl;$('#cUrl').value=cfg.url;$('#cMsg').textContent='';$('#mCfg').classList.add('on')};
+$('#cOk').onclick=()=>{const s=$('#cSheet').value.trim(),u=$('#cUrl').value.trim();
+  if(!/^https:\/\/docs\.google\.com\/spreadsheets\/d\//.test(s)||!/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)){toast('Revisa los enlaces: el del script debe terminar en /exec');return}
+  cfg={sheetUrl:s,url:u};sv(K.cfg,cfg);$('#mCfg').classList.remove('on');pull()};
+$('#cOff').onclick=()=>{cfg={sheetUrl:'',url:''};sv(K.cfg,cfg);$('#mCfg').classList.remove('on');$('#st').className='';$('#st').textContent='Sin conectar';render()};
+$('#cTest').onclick=()=>{const u=$('#cUrl').value.trim(),s=$('#cSheet').value.trim(),m=$('#cMsg'),bak=cfg;if(!u){m.textContent='❌ Falta la URL del Apps Script';return}
+  m.textContent='Probando…';cfg={sheetUrl:s,url:u};const info=' · La URL tiene '+u.length+' caracteres y termina en "'+u.slice(-12)+'"';
+  jsonp('ping',{},d=>{cfg=bak;if(d&&d.ok)m.textContent='✅ El conector responde ('+d.version+')'+info;else fetch(u+'?action=ping',{mode:'no-cors'}).then(()=>m.textContent='⚠️ Llega a Google pero no carga el script: abre la app en Chrome o Safari (no dentro de WhatsApp) y desactiva bloqueadores.'+info).catch(()=>m.textContent='❌ El navegador no logra comunicarse con Google (bloqueador, red o ahorro de datos).'+info)})};
+$('#cShare').onclick=()=>{const s=$('#cSheet').value.trim()||cfg.sheetUrl,u=$('#cUrl').value.trim()||cfg.url;if(!s||!u){toast('Primero conecta la Sheet en este equipo');return}
+  const link=location.origin+location.pathname+'#cfg='+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({sheetUrl:s,url:u})))));
+  (navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(()=>toast('Enlace copiado. Envíatelo y ábrelo en el otro equipo')).catch(()=>prompt('Copia este enlace:',link))};
+document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>b.closest('.mb').classList.remove('on'));
+document.querySelectorAll('.mb').forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('on')});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+setInterval(()=>{if(!document.hidden&&!document.querySelector('.mb.on'))sync()},60000);
+/* Primera visita sin conexión ni datos: carga asesores ficticios para poder mostrar el panel de inmediato */
+if(!cfg.url&&!DB.reg.length&&!DB.met.length&&!ld(K.seen,false)){sv(K.seen,true);loadDemo()}
+render();if(cfg.url){statusOk();sync()}
+</script></body></html>
